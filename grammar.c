@@ -20,7 +20,7 @@ void readGrammar( char* filename/* , GrammarCell* grammar */){
     int size=INITSIZE;
     int lineCount=0;
     GrammarCell* grammar = (GrammarCell*)malloc(INITSIZE*sizeof(GrammarCell));
-    GrammarNode* currentGrammarNode = NULL;
+    GrammarNode* currentGrammarNode = NULL; 
     GrammarNode* previousGrammarNode = NULL;
     while(fgets(line,MAXCHARLINE,fptr) != NULL){
         p = strtok(line," ");

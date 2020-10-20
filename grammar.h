@@ -20,7 +20,7 @@ typedef struct grammarNode {
 typedef struct grammarCell {
     char nonTerminalName[MAXCHARWORD];
     GrammarNode *rule;
-}GrammarCell; // an element of array gtammer
+}GrammarCell; // an element of array grammer
 
 typedef struct GrammarCell* Grammar; // array
 
