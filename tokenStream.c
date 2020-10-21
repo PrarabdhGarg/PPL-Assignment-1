@@ -1,14 +1,14 @@
 #include "tokenStream.h"
 
-int main(){     //sample driver main for code-testing
-    char filename[]="sourcecode.txt";
+/* int main(){     //sample driver main for code-testing
+    char filename[]="test.txt";
     TokenStream tokenstream=NULL;
     
     tokenstream=tokeniseSourcecode(filename,tokenstream);
     printLinkedList(tokenstream);
 
     return 0;
-}
+} */
 
 TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
 {

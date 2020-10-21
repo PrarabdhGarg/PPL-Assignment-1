@@ -63,6 +63,14 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                         nextToken = nextToken -> next;
                         return 1;
                     }
+                } else if(nextToken -> token == Symbol) {
+                    // TODO: Replace with symbol check
+                    if(1 == 1) {
+                        root -> node.leafNode.lexeme = nextToken -> lexeme;
+                        root -> node.leafNode.lineNumber = nextToken -> lineNumber;
+                        nextToken = nextToken -> next;
+                        return 1;
+                    }
                 } else {
                     // TODO: Replace with symbol check
                     if(1 == 1) {
@@ -90,6 +98,7 @@ void createParseTree(ParseTreeNode *root, Token *tokenStream, GrammarCell *gramm
     root -> symbolName = "Start";
     root -> tokenType = NonTerminal;
     nextToken = tokenStream;
+    createParseTreeReccursive(root, grammar, grammarLength);
 }
 
 /* void createParseTree(ParseTreeNode *root, Token *tokenStream, GrammarCell *grammar, int grammarLength) {

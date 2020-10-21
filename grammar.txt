@@ -1,8 +1,8 @@
 Start program () { DeclarationStatements AssignmentStatements }
 DeclarationStatements DeclarationStatement DeclarationStatements
 DeclarationStatements DeclarationStatement
-DeclarationStatement declare Identifier COLON DataType SEMICOLON
-DeclarationStatement declare list of variables MultipleVariables COLON DataType SEMICOLON
+DeclarationStatement declare Identifier : DataType ;
+DeclarationStatement declare list of variables MultipleVariables : DataType ;
 MultipleVariables Identifier MultipleVariables
 MultipleVariables Identifier Identifier
 DataType PrimitiveDataType
@@ -16,17 +16,17 @@ RectangularArrayDataType array RectangularDimensions of integer
 RectangularDimensions RectangularDimension RectangularDimensions
 RectangularDimensions RectangularDimension
 RectangularDimension [ Index .. Index ]
-JaggedArrayDataType jagged array  [ IntegerConstant .. IntegerConstant ] EmptyDimensions of integer SEMICOLON \n RowDefinitionJaggedArray
+JaggedArrayDataType jagged array  [ IntegerConstant .. IntegerConstant ] EmptyDimensions of integer ; RowDefinitionJaggedArray
 EmptyDimensions [ ]
 EmptyDimensions [ ] [ ]
 RowDefinitionJaggedArray R1 [ IntegerConstant ] : size IntegerConstant : values { ValuesList }
-ValuesList NumbersList SEMICOLON ValuesList
+ValuesList NumbersList ; ValuesList
 ValuesList NumbersList
 NumbersList IntegerConstant NumbersList
 NumbersList IntegerConstant
 AssignmentStatements AssignmentStatement AssignmentStatements
 AssignmentStatements AssignmentStatement
-AssignmentStatement Identifier EQUAL_TO Expression SEMICOLON
+AssignmentStatement Identifier = Expression SEMICOLON
 Expression BooleanExpression
 Expression ArithmeticExpression
 BooleanExpression LogicalAndExpression ||| BooleanExpression
@@ -43,7 +43,7 @@ IndexList Index IndexList
 IndexList Index
 Index Identifier
 Index IntegerConstant
-PlusMinus PLUS
-PlusMinus MINUS
-MultiplyDivide MULTIPLY
-MultiplyDivide DIVIDE
+PlusMinus +
+PlusMinus -
+MultiplyDivide *
+MultiplyDivide /
