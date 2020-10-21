@@ -13,6 +13,7 @@ int readGrammar( char* filename, GrammarCell* grammar){
     char line[MAXCHARLINE];
     int size=INITSIZE;
     int lineCount=0;
+
     // GrammarCell* grammar = (GrammarCell*)malloc(INITSIZE*sizeof(GrammarCell));
     GrammarNode* currentGrammarNode = NULL;
     GrammarNode* previousGrammarNode = NULL;
