@@ -10,6 +10,25 @@
     return 0;
 } */
 
+char KEYWORDS[12][10]={     //list of keywords for comparision 
+    "program",
+    "declare",
+    "list",
+    "of",
+    "variables",
+    "array",
+    "size",
+    "values",
+    "jagged",
+    "integer",
+    "real",
+    "boolean"
+};
+
+char SYMBOLS[9]={'(',')','{','}','[',']',':',';','.'};  //list of symbols for comparision
+
+char OPERATORS[7]={'+','-','*','/','=','&','|'};    //list of operators for comparision
+
 TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
 {
 	FILE *fptr;

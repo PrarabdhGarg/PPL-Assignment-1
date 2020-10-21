@@ -68,7 +68,7 @@ int readGrammar( char* filename, GrammarCell* grammar){
             p = strtok(NULL," ");
         }
     }
-    printf("Line count %d",lineCount);
+    printf("Line count %d\n",lineCount);
     fclose(fptr);
     // printGrammar(lineCount,grammar);
     return lineCount;

@@ -21,25 +21,6 @@ typedef struct token{       //node of token linked list
 
 typedef Token *TokenStream; //head of token linked list
 
-char KEYWORDS[12][10]={     //list of keywords for comparision 
-    "program",
-    "declare",
-    "list",
-    "of",
-    "variables",
-    "array",
-    "size",
-    "values",
-    "jagged",
-    "integer",
-    "real",
-    "boolean"
-};
-
-char SYMBOLS[9]={'(',')','{','}','[',']',':',';','.'};  //list of symbols for comparision
-
-char OPERATORS[7]={'+','-','*','/','=','&','|'};    //list of operators for comparision
-
 TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream);  //takes filename and token pointer as 
                                                                         //input and returns token pointer to head of linked list
 

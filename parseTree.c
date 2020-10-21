@@ -1,7 +1,4 @@
-#include "parseTree.h"
-#include "grammar.h"
 #include "stack.h"
-#include "string.h"
 
 Token *nextToken = NULL;
 

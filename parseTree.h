@@ -23,3 +23,5 @@ typedef struct parseTreeNode {
     TokenType tokenType;
     Node node;
 } ParseTreeNode;
+
+void createParseTree(ParseTreeNode *root, Token *tokenStream, GrammarCell *grammar, int grammarLength);
