@@ -41,7 +41,7 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
     char in_line[MAXLINELENGHT];
     int lineCount=0;
 
-    tokenstream = (Token*)malloc(sizeof(Token));
+    // tokenstream = (Token*)malloc(sizeof(Token));
     Token* currentToken=tokenstream;
     Token* prevToken=NULL;
     while (fgets(in_line,MAXLINELENGHT,fptr) != NULL){  //loop to read one line and input it to in_line

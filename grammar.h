@@ -4,7 +4,7 @@
 
 #define MAXCHARLINE 500
 #define MAXCHARWORD 100
-#define INITSIZE 10
+#define INITSIZE 50
 
 typedef enum {
     Terminal,

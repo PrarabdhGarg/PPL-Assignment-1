@@ -1,10 +1,10 @@
 Start program () { DeclarationStatements AssignmentStatements }
-DeclarationStatements DeclarationStatement DeclarationStatements
 DeclarationStatements DeclarationStatement
-DeclarationStatement declare Identifier : DataType ;
+DeclarationStatements DeclarationStatement DeclarationStatements
+DeclarationStatement declare identifier : DataType ;
 DeclarationStatement declare list of variables MultipleVariables : DataType ;
-MultipleVariables Identifier MultipleVariables
-MultipleVariables Identifier Identifier
+MultipleVariables identifier MultipleVariables
+MultipleVariables identifier identifier
 DataType PrimitiveDataType
 DataType ArrayDataType
 ArrayDataType RectangularArrayDataType
@@ -26,22 +26,22 @@ NumbersList IntegerConstant NumbersList
 NumbersList IntegerConstant
 AssignmentStatements AssignmentStatement AssignmentStatements
 AssignmentStatements AssignmentStatement
-AssignmentStatement Identifier = Expression SEMICOLON
+AssignmentStatement identifier = Expression SEMICOLON
 Expression BooleanExpression
 Expression ArithmeticExpression
 BooleanExpression LogicalAndExpression ||| BooleanExpression
 BooleanExpression LogicalAndExpression
-LogicalAndExpression Identifier &&& LogicalAndExpression
-LogicalAndExpression Identifier
+LogicalAndExpression identifier &&& LogicalAndExpression
+LogicalAndExpression identifier
 ArithmaticExpression Term PlusMinus ArithmaticExpression
 ArithmaticExpression Term
-Term Identifier MultiplyDivide Term
+Term identifier MultiplyDivide Term
 Term SingleTerm
-SingleTerm Identifier 
-SingleTerm Identifier [ IndexList ]
+SingleTerm identifier 
+SingleTerm identifier [ IndexList ]
 IndexList Index IndexList
 IndexList Index
-Index Identifier
+Index identifier
 Index IntegerConstant
 PlusMinus +
 PlusMinus -

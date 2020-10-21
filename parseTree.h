@@ -20,7 +20,7 @@ typedef union {
 
 typedef struct parseTreeNode {
     char *symbolName;
-    TokenType tokenType;
+    SymbolType tokenType;
     Node node;
 } ParseTreeNode;
 
