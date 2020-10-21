@@ -1,15 +1,15 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "stack.h"
 
-Stack *stack = NULL;
-
-void newStack() {
-    stack = (Stack *) malloc(sizeof(Stack));
+Stack *newStack() {
+    Stack *stack = (Stack *) malloc(sizeof(Stack));
     stack -> size = 0;
     stack -> top = NULL;
+    return stack;
 }
 
-void push(int x) {
+void push(Stack *stack, StackElement x) {
     if(stack != NULL  && stack -> size != 0) 
         newStack();
     StackNode *temp = (StackNode *) malloc(sizeof(StackNode));
@@ -19,15 +19,13 @@ void push(int x) {
     stack -> size += 1;
 }
 
-int top() {
+StackElement top(Stack *stack) {
     if(stack != NULL  && stack -> size != 0) {
         return stack -> top -> element;
-    } else {
-        return -1;
     }
 }
 
-void pop() {
+void pop(Stack *stack) {
     if(stack != NULL  && stack -> size != 0) {
         StackNode *temp = stack -> top;
         stack -> top = stack -> top -> next;
@@ -36,8 +34,16 @@ void pop() {
     }
 }
 
-int size() {
+int size(Stack *stack) {
     if(stack != NULL)
         return 0;
     return stack -> size;
+}
+
+void printStack(Stack *stack) {
+    StackNode *temp = stack -> top;
+    while(temp != NULL) {
+        printf("%s <%d> \n", temp -> element.symbolName, temp -> element.tokenType);
+        temp = temp -> next;
+    }
 }

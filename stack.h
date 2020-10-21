@@ -1,7 +1,12 @@
 // TODO: Replace data type of stack element from int to whatever is required
-typedef struct {
-    int element;
-    StackNode *next;
+#include "parseTree.h"
+#include "grammar.h"
+
+typedef ParseTreeNode StackElement;
+
+typedef struct stackNode {
+    StackElement element;
+    struct stackNode *next;
 } StackNode;
 
 typedef struct {
@@ -9,8 +14,9 @@ typedef struct {
     int size;
 } Stack;
 
-void newStack();
-void push(int);
-int top();
-void pop();
-int size();
+Stack *newStack();
+void push(Stack *, StackElement);
+StackElement top(Stack *);
+void pop(Stack *);
+int size(Stack *);
+void printStack(Stack *);

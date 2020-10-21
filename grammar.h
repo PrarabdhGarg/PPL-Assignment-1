@@ -20,10 +20,9 @@ typedef struct grammarNode {
 typedef struct grammarCell {
     char nonTerminalName[MAXCHARWORD];
     GrammarNode *rule;
-}GrammarCell; // an element of array gtammer
+}GrammarCell; // an element of array grammar
 
 typedef struct GrammarCell* Grammar; // array
 
-void readGrammar( char* filename/* , GrammarCell* grammar */);
+int readGrammar( char* filename, GrammarCell* grammar);
 void printGrammar(int lineCount, GrammarCell* grammar);
-

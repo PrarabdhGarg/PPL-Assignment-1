@@ -1,12 +1,6 @@
 #include"grammar.h" 
 
-void main(){
-    printf("in main");
-readGrammar("grammar.txt"/* ,Grammar */);
-
-}
-
-void readGrammar( char* filename/* , GrammarCell* grammar */){
+int readGrammar( char* filename, GrammarCell* grammar){
 
     FILE *fptr;
     if ((fptr = fopen("grammar.txt", "r")) == NULL) {
@@ -19,15 +13,14 @@ void readGrammar( char* filename/* , GrammarCell* grammar */){
     char line[MAXCHARLINE];
     int size=INITSIZE;
     int lineCount=0;
-    GrammarCell* grammar = (GrammarCell*)malloc(INITSIZE*sizeof(GrammarCell));
+    // GrammarCell* grammar = (GrammarCell*)malloc(INITSIZE*sizeof(GrammarCell));
     GrammarNode* currentGrammarNode = NULL;
     GrammarNode* previousGrammarNode = NULL;
     while(fgets(line,MAXCHARLINE,fptr) != NULL){
         p = strtok(line," ");
         i=0;
         lineCount++;
-        if (lineCount>size)
-        {
+        if (lineCount>size){
             grammar=(GrammarCell*)realloc(grammar, 2*size*sizeof(GrammarCell));
             size=2*size;
         }
@@ -76,7 +69,8 @@ void readGrammar( char* filename/* , GrammarCell* grammar */){
     }
     printf("Line count %d",lineCount);
     fclose(fptr);
-    printGrammar(lineCount,grammar);
+    // printGrammar(lineCount,grammar);
+    return lineCount;
 
 }
 

@@ -1,12 +1,15 @@
 typedef enum {
-    // TODO: Fill this list
-    AssignmentOperator
+    Keyword,
+    Identifier,
+    Operator,
+    IntegerConstant
 } TokenType;
 
-typedef struct {
+typedef struct token {
     TokenType token;
     char *lexeme;
-    Token *next;       
+    struct token *next; 
+    int lineNumber;      
 } Token;
 
 typedef Token *TokenStream;
