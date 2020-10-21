@@ -158,3 +158,33 @@ void createParseTree(ParseTreeNode *root, Token *tokenStream, GrammarCell *gramm
         }
     }
 } */
+
+
+void printParseTree(ParseTreeNode *root, int depth){
+    if(root == NULL)
+        return;
+
+    printf("%s | ", root -> symbolName);
+    
+    switch(root -> tokenType){
+        case 0 : printf("Terminal | ");
+                 printf("%s | ", (root -> node).leafNode.lexeme);
+                 printf("%d | ", (root -> node).leafNode.lineNumber);
+                 break;
+        case 1 : printf("Non-Terminal | ");
+                 printTypeExpression((root -> node).nonLeafNode.typeExpression);
+                 printf(" | ");
+                 printf("%d | ", (root -> node).nonLeafNode.ruleNumber)
+                 break;
+    }
+
+    printf("%d", depth);
+
+    if(root -> tokenType == 0)
+        return;
+
+    for(int i = 0; i < (root -> node).nonLeafNode.noOfChildren; i++){
+        printParseTree((root -> node).nonLeafNode.children[i]);
+    }
+    return;
+}
