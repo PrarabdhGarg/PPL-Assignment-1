@@ -8,6 +8,10 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
             Token *tempToken = nextToken;
             // int result = -1;
             for(int i = 0; i < grammarLength; i++) {
+                if(root -> node.nonLeafNode.noOfChildren != 0) {
+                    free(root -> node.nonLeafNode.children);
+                    root -> node.nonLeafNode.noOfChildren = 0;
+                }
                 if(strcmp(root -> symbolName, grammar[i].nonTerminalName) == 0) {
                     nextToken = tempToken;
                     GrammarNode *rule = grammar[i].rule;
@@ -32,6 +36,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                         temp.symbolName = (char *) malloc(sizeof(char) * strlen(rule -> symbolName));
                         strcpy(temp.symbolName, rule -> symbolName);
                         temp.tokenType = rule -> symbolType;
+                        temp.node.nonLeafNode.noOfChildren = 0;
                         rule = rule -> next;
                         root -> node.nonLeafNode.children[j] = temp;
                         result = createParseTreeReccursive(&(root -> node.nonLeafNode.children[j]), grammar, grammarLength);
@@ -116,6 +121,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
 void createParseTree(ParseTreeNode *root, Token *tokenStream, GrammarCell *grammar, int grammarLength) {
     root -> symbolName = "Start";
     root -> tokenType = NonTerminal;
+    root -> node.nonLeafNode.noOfChildren = 0;
     nextToken = tokenStream;
     createParseTreeReccursive(root, grammar, grammarLength);
 }
