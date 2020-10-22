@@ -27,6 +27,10 @@ int readGrammar( char* filename, GrammarCell* grammar){
         }
         
         while(p != NULL){
+            if(p[strlen(p) - 1] == '\n') {
+                p[strlen(p) - 1] = '\0';
+            }
+            
             if(i==0){
                 //first elemenet of array
                 strcpy(grammar[lineCount-1].nonTerminalName,p);
