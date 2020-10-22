@@ -1,6 +1,6 @@
 Start program () { DeclarationStatements AssignmentStatements }
-DeclarationStatements DeclarationStatement
 DeclarationStatements DeclarationStatement DeclarationStatements
+DeclarationStatements DeclarationStatement
 DeclarationStatement declare identifier : DataType ;
 DeclarationStatement declare list of variables MultipleVariables : DataType ;
 MultipleVariables identifier MultipleVariables
@@ -9,40 +9,41 @@ DataType PrimitiveDataType
 DataType ArrayDataType
 ArrayDataType RectangularArrayDataType
 ArrayDataType JaggedArrayDataType
-PrimitiveDatatype integer
-PrimitiveDatatype boolean
-PrimitiveDatatype real
+PrimitiveDataType integer
+PrimitiveDataType boolean
+PrimitiveDataType real
 RectangularArrayDataType array RectangularDimensions of integer
 RectangularDimensions RectangularDimension RectangularDimensions
 RectangularDimensions RectangularDimension
 RectangularDimension [ Index .. Index ]
-JaggedArrayDataType jagged array  [ IntegerConstant .. IntegerConstant ] EmptyDimensions of integer ; RowDefinitionJaggedArray
+JaggedArrayDataType jagged array  [ integerConstant .. integerConstant ] EmptyDimensions of integer ; RowDefinitionJaggedArray
 EmptyDimensions [ ]
 EmptyDimensions [ ] [ ]
-RowDefinitionJaggedArray R1 [ IntegerConstant ] : size IntegerConstant : values { ValuesList }
+RowDefinitionJaggedArray R1 [ integerConstant ] : size integerConstant : values { ValuesList }
 ValuesList NumbersList ; ValuesList
 ValuesList NumbersList
-NumbersList IntegerConstant NumbersList
-NumbersList IntegerConstant
+NumbersList integerConstant NumbersList
+NumbersList integerConstant
 AssignmentStatements AssignmentStatement AssignmentStatements
 AssignmentStatements AssignmentStatement
-AssignmentStatement identifier = Expression SEMICOLON
+AssignmentStatement SingleTerm = Expression ;
 Expression BooleanExpression
 Expression ArithmeticExpression
 BooleanExpression LogicalAndExpression ||| BooleanExpression
 BooleanExpression LogicalAndExpression
 LogicalAndExpression identifier &&& LogicalAndExpression
-LogicalAndExpression identifier
-ArithmaticExpression Term PlusMinus ArithmaticExpression
-ArithmaticExpression Term
+LogicalAndExpression identifier &&& identifier
+ArithmeticExpression Term PlusMinus ArithmeticExpression
+ArithmeticExpression Term
 Term identifier MultiplyDivide Term
 Term SingleTerm
-SingleTerm identifier 
 SingleTerm identifier [ IndexList ]
+SingleTerm identifier
+SingleTerm integerConstant
 IndexList Index IndexList
 IndexList Index
 Index identifier
-Index IntegerConstant
+Index integerConstant
 PlusMinus +
 PlusMinus -
 MultiplyDivide *

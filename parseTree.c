@@ -5,8 +5,11 @@ Token *nextToken = NULL;
 int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int grammarLength) {
     if(root != NULL) {
         if(root -> tokenType == NonTerminal) {
+            Token *tempToken = nextToken;
+            // int result = -1;
             for(int i = 0; i < grammarLength; i++) {
                 if(strcmp(root -> symbolName, grammar[i].nonTerminalName) == 0) {
+                    nextToken = tempToken;
                     GrammarNode *rule = grammar[i].rule;
                     Stack *tempStack = newStack();
                     int count = 0;
@@ -23,23 +26,28 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     root -> node.nonLeafNode.ruleNumber = i;
                     root -> node.nonLeafNode.children = (ParseTreeNode *) malloc(sizeof(ParseTreeNode) * count);
                     rule = grammar[i].rule;
-                    for(int i = 0; i < count; i++) {
+                    int result = 0;
+                    for(int j = 0; j < count && result >= 0; j++) {
                         ParseTreeNode temp;
                         temp.symbolName = (char *) malloc(sizeof(char) * strlen(rule -> symbolName));
                         strcpy(temp.symbolName, rule -> symbolName);
                         temp.tokenType = rule -> symbolType;
                         rule = rule -> next;
-                        root -> node.nonLeafNode.children[i] = temp;
-                        int result = createParseTreeReccursive(&(root -> node.nonLeafNode.children[i]), grammar, grammarLength);
+                        root -> node.nonLeafNode.children[j] = temp;
+                        result = createParseTreeReccursive(&(root -> node.nonLeafNode.children[j]), grammar, grammarLength);
                         if(result < 0) {
-                            continue;
+                            break;
                         } else {
                             pop(tempStack);
                         }
                     }
+                    if(result < 0) {
+                        continue;
+                    }
                     return 1;
                 }
             }
+            printf("Couldn't find a suitable rule for %s. \n", root -> symbolName);
             return -1;
         } else if(root -> tokenType == Terminal) {
             if(nextToken != NULL) {
@@ -47,43 +55,51 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     if(strcmp(nextToken -> lexeme, root -> symbolName) == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;
+                        printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
                 } else if(nextToken -> token == Operator) {
                     // TODO: Replace with symbol check
-                    if(1 == 1) {
+                    if(isOperator(root -> symbolName) == true && strcmp(nextToken -> lexeme, root -> symbolName) == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;
+                        printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
                 } else if(nextToken -> token == IntegerConstant) {
                     // TODO: Replace with symbol check
-                    if(1 == 1) {
+                    if(strcmp(root -> symbolName, "integerConstant") == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
-                        root -> node.leafNode.lineNumber = nextToken -> lineNumber;
+                        root -> node.leafNode.lineNumber = nextToken -> lineNumber;\
+                        // printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
                 } else if(nextToken -> token == Symbol) {
                     // TODO: Replace with symbol check
-                    if(1 == 1) {
+                    if(isSymbol(root -> symbolName) == true && strcmp(nextToken -> lexeme, root -> symbolName) == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;
+                        printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
                 } else {
                     // TODO: Replace with symbol check
-                    if(1 == 1) {
+                    if(strcmp("identifier", root -> symbolName) == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;
+                        printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
                 }
+                printf("Token Mismatch. BackTracking........\n");
+                return -1;
             } else {
+                printf("Token Stream Empty. BackTracking......\n");
                 return -1;
             }
         } else {
@@ -172,19 +188,20 @@ void printParseTree(ParseTreeNode *root, int depth){
                  printf("%d | ", (root -> node).leafNode.lineNumber);
                  break;
         case 1 : printf("Non-Terminal | ");
-                 printTypeExpression((root -> node).nonLeafNode.typeExpression);
+                // TODO: Handle Type Expressions
+                 // printTypeExpression((root -> node).nonLeafNode.typeExpression);
                  printf(" | ");
-                 printf("%d | ", (root -> node).nonLeafNode.ruleNumber)
+                 printf("%d | ", (root -> node).nonLeafNode.ruleNumber);
                  break;
     }
 
-    printf("%d", depth);
+    printf("%d \n", depth);
 
     if(root -> tokenType == 0)
         return;
 
     for(int i = 0; i < (root -> node).nonLeafNode.noOfChildren; i++){
-        printParseTree((root -> node).nonLeafNode.children[i]);
+        printParseTree(&(root -> node).nonLeafNode.children[i], depth + 1);
     }
     return;
 }

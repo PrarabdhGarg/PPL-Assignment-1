@@ -10,4 +10,5 @@ void main() {
     ParseTreeNode *root = (ParseTreeNode *) malloc(sizeof(ParseTreeNode));
     createParseTree(root, tokenStream, grammar, length);
     printf("Parse Tree Creation complete\n");
+    printParseTree(root, 0);
 }
