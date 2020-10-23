@@ -9,9 +9,9 @@ DataType PrimitiveDataType
 DataType ArrayDataType
 ArrayDataType RectangularArrayDataType
 ArrayDataType JaggedArrayDataType
-PrimitiveDatatype integer
-PrimitiveDatatype boolean
-PrimitiveDatatype real
+PrimitiveDataType integer
+PrimitiveDataType boolean
+PrimitiveDataType real
 RectangularArrayDataType array RectangularDimensions of integer
 RectangularDimensions RectangularDimension RectangularDimensions
 RectangularDimensions RectangularDimension
