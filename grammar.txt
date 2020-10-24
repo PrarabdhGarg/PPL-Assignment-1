@@ -1,25 +1,23 @@
 Start program () { DeclarationStatements AssignmentStatements }
 DeclarationStatements DeclarationStatement DeclarationStatements
 DeclarationStatements DeclarationStatement
-DeclarationStatement declare identifier : DataType ;
-DeclarationStatement declare list of variables MultipleVariables : DataType ;
+DeclarationStatement declare identifier : DataType
+DeclarationStatement declare list of variables MultipleVariables : DataType
 MultipleVariables identifier MultipleVariables
 MultipleVariables identifier identifier
 DataType PrimitiveDataType
-DataType ArrayDataType
-ArrayDataType RectangularArrayDataType
-ArrayDataType JaggedArrayDataType
-PrimitiveDataType integer
-PrimitiveDataType boolean
-PrimitiveDataType real
-RectangularArrayDataType array RectangularDimensions of integer
+DataType array RectangularDimensions of integer
+DataType jagged array  [ integerConstant .. integerConstant ] EmptyDimensions of integer ; RowDefJaggedArray
+PrimitiveDataType integer ;
+PrimitiveDataType boolean ;
+PrimitiveDataType real ;
 RectangularDimensions RectangularDimension RectangularDimensions
 RectangularDimensions RectangularDimension
 RectangularDimension [ Index .. Index ]
-JaggedArrayDataType jagged array  [ integerConstant .. integerConstant ] EmptyDimensions of integer ; RowDefinitionJaggedArray
-EmptyDimensions [ ]
 EmptyDimensions [ ] [ ]
-RowDefinitionJaggedArray R1 [ integerConstant ] : size integerConstant : values { ValuesList }
+EmptyDimensions [ ]
+RowDefJaggedArray R1 [ integerConstant ] : size integerConstant : values { ValuesList } RowDefJaggedArray
+RowDefJaggedArray R1 [ integerConstant ] : size integerConstant : values { ValuesList }
 ValuesList NumbersList ; ValuesList
 ValuesList NumbersList
 NumbersList integerConstant NumbersList

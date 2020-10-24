@@ -48,6 +48,9 @@ int readGrammar( char* filename, GrammarCell* grammar){
                 else{
                     currentGrammarNode->symbolType= Terminal;
                 }
+                if(strcmp(currentGrammarNode -> symbolName, "R1") == 0) {
+                    currentGrammarNode -> symbolType = Terminal;
+                }
                 previousGrammarNode=currentGrammarNode;
                 i++;
                 //elements in linked List

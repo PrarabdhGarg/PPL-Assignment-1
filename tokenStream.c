@@ -10,7 +10,7 @@
     return 0;
 } */
 
-char KEYWORDS[12][10]={     //list of keywords for comparision 
+char KEYWORDS[13][10]={     //list of keywords for comparision 
     "program",
     "declare",
     "list",
@@ -22,7 +22,8 @@ char KEYWORDS[12][10]={     //list of keywords for comparision
     "jagged",
     "integer",
     "real",
-    "boolean"
+    "boolean",
+    "R1"
 };
 
 char SYMBOLS[9]={'(',')','{','}','[',']',':',';','.'};  //list of symbols for comparision
@@ -79,11 +80,11 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
 
 bool isKeyword(char* p){
     int i=0;
-    for(;i<12;i++){
+    for(;i<13;i++){
         if(strcmp(p,KEYWORDS+i)==0)
             break;
     }
-    if(i==12)
+    if(i==13)
         return false;
     else
         return true;

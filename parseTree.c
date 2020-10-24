@@ -78,7 +78,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     if(strcmp(root -> symbolName, "integerConstant") == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;\
-                        // printf("Token Consumed = %s\n", nextToken -> lexeme);
+                        printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }

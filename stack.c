@@ -10,8 +10,8 @@ Stack *newStack() {
 }
 
 void push(Stack *stack, StackElement x) {
-    if(stack != NULL  && stack -> size != 0) 
-        newStack();
+    /* if(stack != NULL  && stack -> size != 0) 
+        newStack(); */
     StackNode *temp = (StackNode *) malloc(sizeof(StackNode));
     temp -> element = x;
     temp -> next = stack -> top;
