@@ -1,5 +1,50 @@
 #include "typeExpressionTable.h"
 
+int calculateHash(char *str) {
+    int hash = 0;
+    for(int i = 0; i < strlen(str); i++) {
+        hash += (int) str[i];
+    }
+    return hash % HASH_TABLE_SIZE;
+}
+
+TypeExpressionTable createNewTypeExpressionTable() {
+    TypeExpressionTable typeExpressionTable = (TypeExpressionTable) malloc(sizeof(HashTableElement) * HASH_TABLE_SIZE);
+    for(int i = 0; i < HASH_TABLE_SIZE; i++) {
+        typeExpressionTable[i].next = NULL;
+        typeExpressionTable[i].element =NULL;
+    }
+    return typeExpressionTable;
+}
+
+void insertInTypeExpressionTable(TypeExpressionTableElement *element, TypeExpressionTable typeExpressionTable) {
+    HashTableElement *temp = (HashTableElement *) malloc(sizeof(HashTableElement));
+    temp -> element = element;
+    temp -> next = NULL;
+    int hash = calculateHash(element -> variableName);
+    HashTableElement *next = (typeExpressionTable + hash);
+    if(next -> element == NULL) {
+        next -> element = element;
+        free(temp);
+    } else {
+        while(next -> next != NULL) {
+            next = next -> next;
+        }
+        next -> next = temp;
+    }
+}
+
+TypeExpressionTableElement *getElementFromTypeExpressionTable(char *symbolName , TypeExpressionTable typeExpressionTable) {
+    int hash = calculateHash(symbolName);
+    HashTableElement *next = (typeExpressionTable + hash);
+    while(next != NULL) {
+        if(strcmp(next -> element -> variableName, symbolName) == 0) {
+            return next -> element;
+        }
+    }
+    return NULL;
+}
+
 void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T ){
     ParseTreeNode *declarations, *assignments;
     declarations = (root -> node).nonLeafNode.children + 4;

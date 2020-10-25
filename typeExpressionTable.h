@@ -1,6 +1,8 @@
 #include "typeExpression.h"
 #include "parseTree.h"
 
+#define HASH_TABLE_SIZE 20
+
 typedef enum {
     PrimitiveDataType,
     RectangularArray,
@@ -20,8 +22,17 @@ typedef struct {
     TypeExpression typeExpression;
 } TypeExpressionTableElement;
 
-typedef TypeExpressionTableElement * TypeExpressionTable;
+typedef struct {
+    TypeExpressionTableElement *element;
+    TypeExpressionTableElement *next;
+} HashTableElement;
 
+
+typedef HashTableElement *TypeExpressionTable;
+
+TypeExpressionTable createNewTypeExpressionTable();
+void insertInTypeExpressionTable(TypeExpressionTableElement *element, TypeExpressionTable typeExpressionTable);
+TypeExpressionTableElement *getElementFromTypeExpressionTable(char *symbolName , TypeExpressionTable typeExpressionTable);
 void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T );
 void traverseDeclarationsParseTree(ParseTreeNode *declarations, TypeExpressionTable T);
 void traverseAssignmentsParseTree(ParseTreeNode *assignments, TypeExpressionTable T);
