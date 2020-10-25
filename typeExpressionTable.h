@@ -1,12 +1,11 @@
-#include "typeExpression.h"
 #include "parseTree.h"
 
 #define HASH_TABLE_SIZE 20
 
 typedef enum {
     PrimitiveDataType,
-    RectangularArray,
-    JaggedArray
+    RectangularArrayDataType,
+    JaggedArrayDataType
 } ArrayType;
 
 typedef enum {
