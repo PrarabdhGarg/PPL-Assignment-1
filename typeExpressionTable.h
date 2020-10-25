@@ -1,6 +1,6 @@
 #include "parseTree.h"
 
-#define HASH_TABLE_SIZE 20
+#define HASH_TABLE_SIZE 3
 
 typedef enum {
     PrimitiveDataType,
@@ -21,9 +21,9 @@ typedef struct {
     TypeExpression typeExpression;
 } TypeExpressionTableElement;
 
-typedef struct {
+typedef struct hashTableElement {
     TypeExpressionTableElement *element;
-    TypeExpressionTableElement *next;
+    struct hashTableElement *next;
 } HashTableElement;
 
 
