@@ -25,16 +25,14 @@ NumbersList integerConstant
 AssignmentStatements AssignmentStatement AssignmentStatements
 AssignmentStatements AssignmentStatement
 AssignmentStatement SingleTerm = Expression ;
-Expression BooleanExpression
-Expression ArithmeticExpression
-BooleanExpression LogicalAndExpression ||| BooleanExpression
-BooleanExpression LogicalAndExpression
-LogicalAndExpression identifier &&& LogicalAndExpression
-LogicalAndExpression identifier &&& identifier
-ArithmeticExpression Term PlusMinus ArithmeticExpression
-ArithmeticExpression Term
-Term identifier MultiplyDivide Term
-Term SingleTerm
+Expression Term PlusMinus Expression
+Expression Term
+Term LogicalOrExpression MultiplyDivide Term
+Term LogicalOrExpression
+LogicalOrExpression LogicalAndExpression ||| LogicalOrExpression
+LogicalOrExpression LogicalAndExpression
+LogicalAndExpression SingleTerm &&& LogicalAndExpression
+LogicalAndExpression SingleTerm
 SingleTerm identifier [ IndexList ]
 SingleTerm identifier
 SingleTerm integerConstant
