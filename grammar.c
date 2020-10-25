@@ -1,4 +1,5 @@
 #include"grammar.h" 
+#include "typeExpressionTable.h"
 
 int readGrammar( char* filename, GrammarCell* grammar){
 

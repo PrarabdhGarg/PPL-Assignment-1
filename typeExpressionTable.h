@@ -18,3 +18,7 @@ typedef struct {
     TypeOfRange typeOfRange;
     TypeExpression typeExpression;
 } TypeExpressionTableElement;
+
+void printTypeExpressionTable(TypeExpressionTableElement * T);
+void printTypeExpressionTableElement(TypeExpressionTableElement element);
+
