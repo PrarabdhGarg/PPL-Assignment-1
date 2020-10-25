@@ -3,7 +3,9 @@ typedef enum {
     Real,
     Boolean,
     RectangularArray,
-    JaggedArray
+    JaggedArray,
+    None,
+    Error
 } DataTypes;
 
 typedef struct {
