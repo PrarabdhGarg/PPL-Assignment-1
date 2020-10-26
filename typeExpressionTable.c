@@ -57,11 +57,11 @@ void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T ){
 void traverseDeclarationsParseTree(ParseTreeNode *declarations, TypeExpressionTable T){
     declarations -> node.nonLeafNode.typeExpression.type = None;
     
-    if(declarations -> node.nonLeafNode.ruleNumber == 1)
+    if(declarations -> node.nonLeafNode.ruleNumber == 2)
         traverseDeclarationParseTree(declarations -> node.nonLeafNode.children, T);
         
 
-    else if(declarations -> node.nonLeafNode.ruleNumber == 2){
+    else if(declarations -> node.nonLeafNode.ruleNumber == 1){
         traverseDeclarationParseTree(declarations -> node.nonLeafNode.children, T);
         traverseDeclarationsParseTree(declarations -> node.nonLeafNode.children + 1, T);
     }
@@ -77,31 +77,31 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
     dataType = declaration -> node.nonLeafNode.children + noOfChildren-1;
     primitiveDataType = dataType -> node.nonLeafNode.children;
     
-    if(dataType -> node.nonLeafNode.ruleNumber == 8){ //PrimitiveDataType
-        if(primitiveDataType -> node.nonLeafNode.ruleNumber == 12){
+    if(dataType -> node.nonLeafNode.ruleNumber == 7){ //PrimitiveDataType
+        if(primitiveDataType -> node.nonLeafNode.ruleNumber == 10){
             declaration -> node.nonLeafNode.typeExpression.type = Integer;
             dataType -> node.nonLeafNode.typeExpression.type = Integer;
             primitiveDataType -> node.nonLeafNode.typeExpression.type = Integer;            
         }
-        else if(primitiveDataType -> node.nonLeafNode.ruleNumber == 13){
+        else if(primitiveDataType -> node.nonLeafNode.ruleNumber == 12){
             declaration -> node.nonLeafNode.typeExpression.type = Real;
             dataType -> node.nonLeafNode.typeExpression.type = Real;
             primitiveDataType -> node.nonLeafNode.typeExpression.type = Real;
         }
-        else if(primitiveDataType -> node.nonLeafNode.ruleNumber == 14){
+        else if(primitiveDataType -> node.nonLeafNode.ruleNumber == 11){
             declaration -> node.nonLeafNode.typeExpression.type = Boolean;
             dataType -> node.nonLeafNode.typeExpression.type = Boolean;
             primitiveDataType -> node.nonLeafNode.typeExpression.type = Boolean;
         }
     }
-    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 9){ //RectangularArrayType
+    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 8){ //RectangularArrayType
         int dimensions = 1, i;
         DataTypes type;
         ParseTreeNode *rectangularDimensions, *rectangularDimension, *startIndex, *endIndex;
         RectangularRange *ranges;
 
         primitiveDataType = dataType -> node.nonLeafNode.children + 3;
-        if(primitiveDataType -> node.nonLeafNode.ruleNumber != 12){
+        if(primitiveDataType -> node.nonLeafNode.ruleNumber != 10){
             type = Error;
             //error 
             //not integer
@@ -113,7 +113,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         dataType -> node.nonLeafNode.typeExpression.type = type;
 
         rectangularDimensions = dataType -> node.nonLeafNode.children + 1;
-        while(rectangularDimensions -> node.nonLeafNode.ruleNumber == 14){
+        while(rectangularDimensions -> node.nonLeafNode.ruleNumber == 13){
             rectangularDimension = rectangularDimensions -> node.nonLeafNode.children;
             rectangularDimension -> node.nonLeafNode.typeExpression.type = type;
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType = Integer;
@@ -191,7 +191,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         declaration -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges = ranges;
     }
 
-    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 10){//JaggedArrayType
+    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 9){//JaggedArrayType
         ParseTreeNode *emptyDimensions, startIndex, endIndex, *rowDefJaggedArray;
         int start, end, dimensions, size;
         emptyDimensions = declaration -> node.nonLeafNode.children + 7;
@@ -236,14 +236,14 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         }
     }
 
-    if(declaration -> node.nonLeafNode.ruleNumber == 4){
+    if(declaration -> node.nonLeafNode.ruleNumber == 3){
         populateSymbolTable(declaration->node.nonLeafNode.children+1, declaration, T);
     }
-    else if(declaration -> node.nonLeafNode.ruleNumber == 5){
+    else if(declaration -> node.nonLeafNode.ruleNumber == 4){
         ParseTreeNode *multipleVariables;
         multipleVariables = declaration->node.nonLeafNode.children + 4;
 
-        while(multipleVariables->node.nonLeafNode.ruleNumber == 6){
+        while(multipleVariables->node.nonLeafNode.ruleNumber == 5){
             populateSymbolTable(multipleVariables->node.nonLeafNode.children, declaration, T);
             multipleVariables = multipleVariables->node.nonLeafNode.children + 1;
         }
@@ -284,11 +284,11 @@ void populateSymbolTable(ParseTreeNode *terminal, ParseTreeNode *nonTerminal, Ty
 void traverseAssignmentsParseTree(ParseTreeNode *assignments, TypeExpressionTable T){
     assignments->node.nonLeafNode.typeExpression.type = None;
 
-    if(assignments->node.nonLeafNode.ruleNumber == 26){
+    if(assignments->node.nonLeafNode.ruleNumber == 25){
         traverseAssignmentParseTree(assignments->node.nonLeafNode.children, T);
         traverseAssignmentsParseTree(assignments+1, T);
     }
-    else if(assignments->node.nonLeafNode.ruleNumber == 27){
+    else if(assignments->node.nonLeafNode.ruleNumber == 26){
         traverseAssignmentParseTree(assignments->node.nonLeafNode.children, T);
     }
     return;
@@ -306,10 +306,10 @@ void traverseAssignmentParseTree(ParseTreeNode *assignment, TypeExpressionTable 
 }
 
 void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable T){
-    if(expression->node.nonLeafNode.ruleNumber == 30){ //term
+    if(expression->node.nonLeafNode.ruleNumber == 29){ //term
 
     }
-    else if(expression->node.nonLeafNode.ruleNumber == 29){ //term plus minus expression
+    else if(expression->node.nonLeafNode.ruleNumber == 28){ //term plusminus expression
 
     }
 }
