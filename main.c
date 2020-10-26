@@ -1,8 +1,9 @@
 #include "typeExpressionTable.h"
 
 void main() {
-    /* GrammarCell *grammar = (GrammarCell *) malloc(INITSIZE * sizeof(GrammarCell));
+    GrammarCell *grammar = (GrammarCell *) malloc(INITSIZE * sizeof(GrammarCell));
     TokenStream tokenStream;
+    TypeExpressionTable typeExpressionTable = createNewTypeExpressionTable();
     int length = readGrammar("grammar.txt", grammar);
     printf("Grammar Read Sucessfully\n");
     tokeniseSourcecode("test.txt", tokenStream);
@@ -10,7 +11,9 @@ void main() {
     ParseTreeNode *root = (ParseTreeNode *) malloc(sizeof(ParseTreeNode));
     createParseTree(root, tokenStream, grammar, length);
     printf("Parse Tree Creation complete\n");
-    printParseTree(root, 0); */
+    traverseParseTree(root, typeExpressionTable);
+    printf("traversed\n");
+    printParseTree(root, 0);
 
     
 }
