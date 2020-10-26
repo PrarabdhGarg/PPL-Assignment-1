@@ -94,7 +94,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             primitiveDataType -> node.nonLeafNode.typeExpression.type = Boolean;
         }
     }
-    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 8){ //RectangularArrayType
+    else if(dataType -> node.nonLeafNode.ruleNumber == 8){ //RectangularArrayType
         int dimensions = 1, i;
         DataTypes type;
         ParseTreeNode *rectangularDimensions, *rectangularDimension, *startIndex, *endIndex;
@@ -118,6 +118,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             rectangularDimension -> node.nonLeafNode.typeExpression.type = type;
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType = Integer;
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions = dimensions;
+            rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.typeOfRange = 0;
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges = malloc(sizeof(RectangularRange)*dimensions);
 
             for(i = 0; i < dimensions-1; i++){
@@ -143,7 +144,11 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                 dynamic = true;
             }
             else if(endIndex -> node.nonLeafNode.ruleNumber == 42){
-                rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].end = atoi(startIndex -> node.nonLeafNode.children -> node.leafNode.lexeme);
+                rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].end = atoi(endIndex -> node.nonLeafNode.children -> node.leafNode.lexeme);
+            }
+
+            if(dynamic){
+                rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.typeOfRange = 1;
             }
 
             rectangularDimensions = rectangularDimensions -> node.nonLeafNode.children + 1;
@@ -179,7 +184,11 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dynamic = true;
         }
         else if(endIndex -> node.nonLeafNode.ruleNumber == 42){
-            rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].end = atoi(startIndex -> node.nonLeafNode.children -> node.leafNode.lexeme);
+            rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].end = atoi(endIndex -> node.nonLeafNode.children -> node.leafNode.lexeme);
+        }
+
+        if(dynamic){
+            rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.typeOfRange = 1;
         }
 
         primitiveDataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges = ranges;
@@ -189,6 +198,14 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         declaration -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType = Integer;
         declaration -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions = dimensions;
         declaration -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges = ranges;
+        if(dynamic){
+            declaration -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.typeOfRange = 1;
+            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.typeOfRange = 1;
+        }
+        else{
+            declaration -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.typeOfRange = 0;
+            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.typeOfRange = 0;
+        }
     }
 
     else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 9){//JaggedArrayType
