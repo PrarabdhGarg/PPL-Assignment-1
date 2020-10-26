@@ -1,5 +1,6 @@
 program ( )
 {
 declare v1 : integer ;
-h1 = s4 - s5 &&& h2 ;
+declare list of variables abcd ghd2_1 ssd_2_3 : array [ 2 .. 5 ] of integer ;
+h1 = s4 &&& s5 ;
 }
