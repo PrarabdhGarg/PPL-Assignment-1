@@ -57,11 +57,11 @@ void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T ){
 void traverseDeclarationsParseTree(ParseTreeNode *declarations, TypeExpressionTable T){
     declarations -> node.nonLeafNode.typeExpression.type = None;
     
-    if(declarations -> node.nonLeafNode.ruleNumber == 1)
+    if(declarations -> node.nonLeafNode.ruleNumber == 2)
         traverseDeclarationParseTree(declarations -> node.nonLeafNode.children, T);
         
 
-    else if(declarations -> node.nonLeafNode.ruleNumber == 2){
+    else if(declarations -> node.nonLeafNode.ruleNumber == 1){
         traverseDeclarationParseTree(declarations -> node.nonLeafNode.children, T);
         traverseDeclarationsParseTree(declarations -> node.nonLeafNode.children + 1, T);
     }
@@ -77,31 +77,31 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
     dataType = declaration -> node.nonLeafNode.children + noOfChildren-1;
     primitiveDataType = dataType -> node.nonLeafNode.children;
     
-    if(dataType -> node.nonLeafNode.ruleNumber == 8){ //PrimitiveDataType
-        if(primitiveDataType -> node.nonLeafNode.ruleNumber == 12){
+    if(dataType -> node.nonLeafNode.ruleNumber == 7){ //PrimitiveDataType
+        if(primitiveDataType -> node.nonLeafNode.ruleNumber == 10){
             declaration -> node.nonLeafNode.typeExpression.type = Integer;
             dataType -> node.nonLeafNode.typeExpression.type = Integer;
             primitiveDataType -> node.nonLeafNode.typeExpression.type = Integer;            
         }
-        else if(primitiveDataType -> node.nonLeafNode.ruleNumber == 13){
+        else if(primitiveDataType -> node.nonLeafNode.ruleNumber == 12){
             declaration -> node.nonLeafNode.typeExpression.type = Real;
             dataType -> node.nonLeafNode.typeExpression.type = Real;
             primitiveDataType -> node.nonLeafNode.typeExpression.type = Real;
         }
-        else if(primitiveDataType -> node.nonLeafNode.ruleNumber == 14){
+        else if(primitiveDataType -> node.nonLeafNode.ruleNumber == 11){
             declaration -> node.nonLeafNode.typeExpression.type = Boolean;
             dataType -> node.nonLeafNode.typeExpression.type = Boolean;
             primitiveDataType -> node.nonLeafNode.typeExpression.type = Boolean;
         }
     }
-    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 9){ //RectangularArrayType
+    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 8){ //RectangularArrayType
         int dimensions = 1, i;
         DataTypes type;
         ParseTreeNode *rectangularDimensions, *rectangularDimension, *startIndex, *endIndex;
         RectangularRange *ranges;
 
         primitiveDataType = dataType -> node.nonLeafNode.children + 3;
-        if(primitiveDataType -> node.nonLeafNode.ruleNumber != 12){
+        if(primitiveDataType -> node.nonLeafNode.ruleNumber != 10){
             type = Error;
             //error 
             //not integer
@@ -113,7 +113,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         dataType -> node.nonLeafNode.typeExpression.type = type;
 
         rectangularDimensions = dataType -> node.nonLeafNode.children + 1;
-        while(rectangularDimensions -> node.nonLeafNode.ruleNumber == 14){
+        while(rectangularDimensions -> node.nonLeafNode.ruleNumber == 13){
             rectangularDimension = rectangularDimensions -> node.nonLeafNode.children;
             rectangularDimension -> node.nonLeafNode.typeExpression.type = type;
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType = Integer;
@@ -191,7 +191,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         declaration -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges = ranges;
     }
 
-    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 10){//JaggedArrayType
+    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 9){//JaggedArrayType
         ParseTreeNode *emptyDimensions, startIndex, endIndex, *rowDefJaggedArray;
         int start, end, dimensions, size;
         emptyDimensions = declaration -> node.nonLeafNode.children + 7;
@@ -212,9 +212,9 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] = start;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] = end;
 
-            for(int i = 1; i < start - end + 2; i++){
+            /*for(int i = 1; i < start - end + 2; i++){
 
-            }
+            }*/
         }
         else if(emptyDimensions -> node.nonLeafNode.ruleNumber == 17){
             dimensions = 2;
@@ -230,20 +230,20 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes = malloc(size * sizeof(int));
             
             rowDefJaggedArray = dataType->node.nonLeafNode.children + 11;
-            for(int i = 0; i < size; i++){
+            /*for(int i = 0; i < size; i++){
                 dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[i] =  
-            }
+            }*/
         }
     }
 
-    if(declaration -> node.nonLeafNode.ruleNumber == 4){
+    if(declaration -> node.nonLeafNode.ruleNumber == 3){
         populateSymbolTable(declaration->node.nonLeafNode.children+1, declaration, T);
     }
-    else if(declaration -> node.nonLeafNode.ruleNumber == 5){
+    else if(declaration -> node.nonLeafNode.ruleNumber == 4){
         ParseTreeNode *multipleVariables;
         multipleVariables = declaration->node.nonLeafNode.children + 4;
 
-        while(multipleVariables->node.nonLeafNode.ruleNumber == 6){
+        while(multipleVariables->node.nonLeafNode.ruleNumber == 5){
             populateSymbolTable(multipleVariables->node.nonLeafNode.children, declaration, T);
             multipleVariables = multipleVariables->node.nonLeafNode.children + 1;
         }
@@ -282,5 +282,88 @@ void populateSymbolTable(ParseTreeNode *terminal, ParseTreeNode *nonTerminal, Ty
 }
 
 void traverseAssignmentsParseTree(ParseTreeNode *assignments, TypeExpressionTable T){
+    assignments->node.nonLeafNode.typeExpression.type = None;
 
+    if(assignments->node.nonLeafNode.ruleNumber == 25){
+        traverseAssignmentParseTree(assignments->node.nonLeafNode.children, T);
+        traverseAssignmentsParseTree(assignments+1, T);
+    }
+    else if(assignments->node.nonLeafNode.ruleNumber == 26){
+        traverseAssignmentParseTree(assignments->node.nonLeafNode.children, T);
+    }
+    return;
+}
+
+void traverseAssignmentParseTree(ParseTreeNode *assignment, TypeExpressionTable T){
+    ParseTreeNode *singleNode, *expression;
+
+    singleNode = assignment->node.nonLeafNode.children;
+    expression = assignment->node.nonLeafNode.children + 2;
+
+    traverseExpressionParseTree(expression, T);
+
+    //compare type expression of epression and singlenode
+}
+
+void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable T){
+    if(expression->node.nonLeafNode.ruleNumber == 29){ //term
+
+    }
+    else if(expression->node.nonLeafNode.ruleNumber == 28){ //term plusminus expression
+
+    }
+}
+
+bool compare(TypeExpression t1, TypeExpression t2) {
+    if(t1.type == t2.type) {
+        if(t1.type == PrimitiveDataType) {
+            return true;
+        } else if(t1.type == RectangularArray) {
+             if(t1.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType == t2.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType) {
+                if(t1.arrayTypeExpression.rectangularArrayTypeExpression.dimensions == t2.arrayTypeExpression.rectangularArrayTypeExpression.dimensions) {
+                   for(int i  = 0; i < t1.arrayTypeExpression.rectangularArrayTypeExpression.dimensions; i++) {
+                       if(t1.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start == t2.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start
+                       && t1.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end == t2.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end)
+                        continue;
+                    return false;
+                   }
+                   return true;
+                } else {
+                    return false;
+                }
+            } else {
+                 return false;
+             }
+        } else {
+            if(t1.arrayTypeExpression.jaggedArrayTypeExpression.basicDataType == t2.arrayTypeExpression.jaggedArrayTypeExpression.basicDataType) {
+                if(t1.arrayTypeExpression.jaggedArrayTypeExpression.dimensions == t2.arrayTypeExpression.jaggedArrayTypeExpression.dimensions) {
+                    if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] 
+                    && t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1]) {
+                        int size = t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] - t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] + 2;
+                        for(int i = 1; i < size; i++) {
+                            if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size) {
+                                for(int j = 0; j < t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size; j++) {
+                                    if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j]) {
+                                        continue;
+                                    }
+                                    return false;
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            return true;
+        }
+    } else {
+        return false;
+    }
 }
