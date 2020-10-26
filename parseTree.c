@@ -183,31 +183,60 @@ void createParseTree(ParseTreeNode *root, Token *tokenStream, GrammarCell *gramm
 
 
 void printParseTree(ParseTreeNode *root, int depth){
+    printf("_______________SymbolName_|_TokenType____|______Lexeme/DataType_|_Line/RuleNumber_|_Depth_|\n");
+    printParseTreeRec(root, depth);
+}
+
+void printParseTreeRec(ParseTreeNode *root, int depth){
     if(root == NULL)
         return;
 
-    printf("%s | ", root -> symbolName);
+    printf("%25s | ", root -> symbolName);
     
     switch(root -> tokenType){
-        case 0 : printf("Terminal | ");
-                 printf("%s | ", (root -> node).leafNode.lexeme);
-                 printf("%d | ", (root -> node).leafNode.lineNumber);
+        case 0 : printf("Terminal     | ");
+                 printf("%20s | ", (root -> node).leafNode.lexeme);
+                 printf("LineNumber%5d | ", (root -> node).leafNode.lineNumber);
                  break;
         case 1 : printf("Non-Terminal | ");
-                // TODO: Handle Type Expressions
-                 // printTypeExpression((root -> node).nonLeafNode.typeExpression);
-                 printf(" | ");
-                 printf("%d | ", (root -> node).nonLeafNode.ruleNumber);
+                 switch ((root->node).nonLeafNode.typeExpression.type)
+                 {
+                 case 0 :
+                     printf("             Integer | ");
+                     break;
+                 case 1 :
+                     printf("                Real | ");
+                     break;    
+                 case 2 :
+                     printf("             Boolean | ");
+                     break;
+                 case 3 :
+                     printf("    RectangularArray | ");
+                     break;
+                 case 4 :
+                     printf("         JaggedArray | ");
+                     break;
+                 case 5 :
+                     printf("                None | ");
+                     break;
+                 case 6 :
+                     printf("               Error | ");
+                     break;
+                 default :
+                     printf("    UnknownDataType  | ");
+                     break;    
+                 }
+                 printf("RuleNumber%5d | ", (root -> node).nonLeafNode.ruleNumber);
                  break;
     }
 
-    printf("%d \n", depth);
+    printf("%5d |\n", depth);
 
     if(root -> tokenType == 0)
         return;
 
     for(int i = 0; i < (root -> node).nonLeafNode.noOfChildren; i++){
-        printParseTree(&(root -> node).nonLeafNode.children[i], depth + 1);
+        printParseTreeRec(&(root -> node).nonLeafNode.children[i], depth + 1);
     }
     return;
 }
