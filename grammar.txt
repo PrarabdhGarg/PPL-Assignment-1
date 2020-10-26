@@ -1,4 +1,4 @@
-Start program () { DeclarationStatements AssignmentStatements }
+Start program ( ) { DeclarationStatements AssignmentStatements }
 DeclarationStatements DeclarationStatement DeclarationStatements
 DeclarationStatements DeclarationStatement
 DeclarationStatement declare identifier : DataType
@@ -6,7 +6,7 @@ DeclarationStatement declare list of variables MultipleVariables : DataType
 MultipleVariables identifier MultipleVariables
 MultipleVariables identifier identifier
 DataType PrimitiveDataType
-DataType array RectangularDimensions of integer
+DataType array RectangularDimensions of integer ;
 DataType jagged array  [ integerConstant .. integerConstant ] EmptyDimensions of integer ; RowDefJaggedArray
 PrimitiveDataType integer ;
 PrimitiveDataType boolean ;
