@@ -1,0 +1,14 @@
+program ( ) {
+    declare list of variables i1 i2 i3 : integer ;
+    declare list of variables r1 r2 r3 : real ;
+    declare list of variables b1 b2 b3 : boolean ;
+    declare arr1 : array [ 2 .. 5 ] [ i1 .. i2 ] [ b1 .. 16 ] of integer ;
+    declare arr2 : array [ 2 .. i1 ] of real ;
+    i1 = 34 ;
+    r3 = r1 / r2 ;
+    i1 = r1 / r2 ;
+    b1 = i1 ;
+    b3 = b1 &&& b2 ||| b3 ;
+    i1 = i1 / i2 ;
+    r2 = i1 / i2 + r1 ;
+}
