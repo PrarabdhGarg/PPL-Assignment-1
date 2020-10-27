@@ -7,14 +7,15 @@ void printTypeExpressionTable(HashTableElement * array) {
     //typeExpressionTable elements
     //printf("called printTypeExpressionTable\n");
     printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
-    printf("| %20s | %20s | %20s | %80s |\n","Variable Name","Data Type", "Type of Range", "Type Expression");
-    printf("---------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("| %-20s | %-20s | %-20s | %-80s |\n","Variable Name","Data Type", "Type of Range", "Type Expression");
+   // printf("---------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
 
     HashTableElement * temp;
     for(int i =0;i<HASH_TABLE_SIZE; i++){
 
         if(array[i].element!=NULL){
-            temp=array;
+            temp=array+i;
 
             do
             {
@@ -24,11 +25,11 @@ void printTypeExpressionTable(HashTableElement * array) {
             
         }
         else{
-            printf(" null h hash table element array index no i=%d \n",i);
+            //printf(" null h hash table element array index no i=%d \n\n",i);
         }
     }
 
-    printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+    //printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
 
 
 }
@@ -43,10 +44,14 @@ void printTypeExpressionTableElement(TypeExpressionTableElement * element){
     char buffer4[250];
 
     if(element->typeExpression.type==None){
-        printf("| %20s | %20s | %20s | %80s |\n", element->variableName, "None","None", "None");
+        printf("| %-20s | %-20s | %-20s | %-80s |\n", element->variableName, "None","not_applicable", "not_applicable");
+        printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+
     }
     else if(element->typeExpression.type==Error){
-        printf("| %20s | %20s | %20s | %80s |\n", element->variableName, "Error","Error", "Error");
+        printf("| %-20s | %-20s | %-20s | %-80s |\n", element->variableName, "Error","not_applicable", "not_applicable");
+        printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+
     }
 
     
@@ -56,7 +61,9 @@ void printTypeExpressionTableElement(TypeExpressionTableElement * element){
         returnArrayType(element->arrayType, buffer1);
         returnTypeOfRange(element->typeOfRange,buffer2 );
         returnTypeExpression(element, buffer3);
-        printf("| %20s | %20s | %20s | %80s |\n", element->variableName,buffer1,buffer2,buffer3);
+        printf("| %-20s | %-20s | %-20s | %-80s |\n", element->variableName,buffer1,buffer2,buffer3);
+        printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+
     
     }
 

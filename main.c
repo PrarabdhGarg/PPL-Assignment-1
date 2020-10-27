@@ -1,12 +1,21 @@
 #include "printTypeExpressionTable.h"
 
-void main() {
+void main(int argc, char *argv[]) {
+
     GrammarCell *grammar = (GrammarCell *) malloc(INITSIZE * sizeof(GrammarCell));
     TokenStream tokenStream;
     TypeExpressionTable typeExpressionTable = createNewTypeExpressionTable();
     int length = readGrammar("grammar.txt", grammar);
     printf("Grammar Read Sucessfully\n");
-    tokeniseSourcecode("test.txt", tokenStream);
+    printf(" argc : %d v %s\n",argc,argv[1]);
+    //tokeniseSourcecode("test.txt", tokenStream);
+    if(argv[1]!=NULL){
+        tokeniseSourcecode(argv[1], tokenStream);
+        //printf(" argc : %d v  YIPEEEE%s\n",argc,argv[1]);
+    }
+    else{
+        tokeniseSourcecode("sourcecode.txt", tokenStream);
+    }
     printf("Token Stream Created Sucessfully Length = %d\n", length);
     ParseTreeNode *root = (ParseTreeNode *) malloc(sizeof(ParseTreeNode));
     createParseTree(root, tokenStream, grammar, length);
