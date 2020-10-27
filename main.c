@@ -18,5 +18,4 @@ void main() {
     //To print the typeExpressionTable
     printTypeExpressionTable(typeExpressionTable);
 
-    
 }

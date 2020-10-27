@@ -22,12 +22,12 @@ typedef struct {
 } TypeExpressionTableElement;
 
 typedef struct hashTableElement {
-    TypeExpressionTableElement *element;
-    struct hashTableElement *next;
+    TypeExpressionTableElement *element; // A1 
+    struct hashTableElement *next;// A1 -> A2 
 } HashTableElement;
 
 
-typedef HashTableElement *TypeExpressionTable; // array of hashtable element where each array element contains a linkedlist of type expressiontable elements
+typedef HashTableElement *TypeExpressionTable;
 
 TypeExpressionTable createNewTypeExpressionTable();
 void insertInTypeExpressionTable(TypeExpressionTableElement *element, TypeExpressionTable typeExpressionTable);
