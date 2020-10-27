@@ -5,8 +5,11 @@ void printTypeExpressionTable(HashTableElement * array) {
     //array is array of hash table elements with size HASH_Table_sze which has
     // hash table elments where each hash table elements contans a linked list of 
     //typeExpressionTable elements
-    printf("called printTypeExpressionTable\n");
-    
+    //printf("called printTypeExpressionTable\n");
+    printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+    printf("| %20s | %20s | %20s | %80s |\n","Variable Name","Data Type", "Type of Range", "Type Expression");
+    printf("---------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+
     HashTableElement * temp;
     for(int i =0;i<HASH_TABLE_SIZE; i++){
 
@@ -25,122 +28,144 @@ void printTypeExpressionTable(HashTableElement * array) {
         }
     }
 
+    printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+
+
 }
 void printTypeExpressionTableElement(TypeExpressionTableElement * element){
-    printf("called printTypeExpressionTableElement\n");
+    //printf("called printTypeExpressionTableElement\n");
     //make border
 
     //string for array type 
-    char buffer[250];
+    char buffer1[250];
+    char buffer2[250];
+    char buffer3[250];
+    char buffer4[250];
 
     if(element->typeExpression.type==None){
-        printf("| %25s | %25s | %25s | %250s |\n", element->variableName, "None","None", "None");
+        printf("| %20s | %20s | %20s | %80s |\n", element->variableName, "None","None", "None");
     }
     else if(element->typeExpression.type==Error){
-        printf("| %25s | %25s | %25s | %250s |\n", element->variableName, "Error","Error", "Error");
+        printf("| %20s | %20s | %20s | %80s |\n", element->variableName, "Error","Error", "Error");
     }
 
+    
     else {
-        printf("| %25s | %25s | %25s | %250s |\n", element->variableName, returnArrayType(element->arrayType, buffer), returnTypeOfRange(element->typeOfRange,buffer),returnTypeExpression(element, buffer));
-
+        
+        //printf("| %20s | %20s | %20s | %150s |\n\n", element->variableName, returnArrayType(element->arrayType, buffer), returnTypeOfRange(element->typeOfRange,buffer ),returnTypeExpression(element, buffer));
+        returnArrayType(element->arrayType, buffer1);
+        returnTypeOfRange(element->typeOfRange,buffer2 );
+        returnTypeExpression(element, buffer3);
+        printf("| %20s | %20s | %20s | %80s |\n", element->variableName,buffer1,buffer2,buffer3);
+    
     }
 
 }
 
 
-char * returnArrayType(int i, char * s){
+char * returnArrayType(int i , char * s ){
 
+   // printf(" //1 ");
     switch (i)
     {
     case 0:
         strcpy(s,"primitive_data_type");
-        return s;
         break;
     
     case 1:
         strcpy(s,"rectangular_array");
-        return s;
         break;
     
     case 2:
         strcpy(s,"jagged_array");
-        return s;
+        
         break;
     
     default:
+        strcpy(s,"Error Occured: returnArrayType()");
         break;
+
+    return s;
     }
 }
 
-char * returnTypeOfRange(int i, char * s){
-    
+char * returnTypeOfRange(int i , char * s ){
+   //printf(" //2 ");
     switch (i)
     {
     case 0:
         strcpy(s,"static");
-        return s;
+        
         break;
     
     case 1:
         strcpy(s,"dynamic");
-        return s;
+        
         break;
     
     case 2:
         strcpy(s,"not_applicable");
-        return s;
+        
         break;
     
     default:
+        strcpy(s,"Error Occured: returnTypeofRange()");
         break;
+
+
     }
+
+     return s;
 }
 
 char * returnPrimitiveDataType(int i, char * s){
+    //printf(" //3 ");
     switch (i)
     {
     case 0:
         strcpy(s,"<type = integer>");
-        return s;
         break;
     
     case 1:
         strcpy(s,"<type = real>");
-        return s;
         break;
     
     case 2:
         strcpy(s,"<type = Boolean>");
-        return s;
         break;
     
     default:
+        strcpy(s,"Error Occured: returnPrimitiveDataType()");
         break;
+    
     }
+
+    return s;
 }
 
 
 char * returnBasicElementDataType(int i, char * s){
+    //printf(" //4 ");
     switch (i)
     {
         case 0:
-        strcpy(s,"integer");
-        return s;
-        break;
+            strcpy(s,"integer");
+            break;
  
         case 1:
-        strcpy(s,"real");
-        return s;
-        break;
+            strcpy(s,"real");
+            break;
     
         case 2:
-        strcpy(s,"Boolean");
-        return s;
-        break;
+            strcpy(s,"Boolean");
+            break;
     
         default:
-        break;
+            strcpy(s,"Error Occured: returnBasicElementDataType()");
+            break;
     }
+
+    return s;
 
 }
 
