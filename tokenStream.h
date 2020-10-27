@@ -2,7 +2,7 @@
 #include<stdbool.h>
 
 #define MAXTOKENLENGHT 20
-#define MAXLINELENGHT 100
+#define MAXLINELENGHT 500
 
 typedef enum {  //enumration of token types
     Keyword,//0
