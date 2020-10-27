@@ -1,4 +1,4 @@
-#include "typeExpressionTable.h"
+#include "printTypeExpressionTable.h"
 
 void main() {
     GrammarCell *grammar = (GrammarCell *) malloc(INITSIZE * sizeof(GrammarCell));
@@ -15,5 +15,7 @@ void main() {
     printf("traversed\n");
     printParseTree(root, 0);
 
-    
+    //To print the typeExpressionTable
+    printTypeExpressionTable(typeExpressionTable);
+
 }

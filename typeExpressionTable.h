@@ -22,8 +22,8 @@ typedef struct {
 } TypeExpressionTableElement;
 
 typedef struct hashTableElement {
-    TypeExpressionTableElement *element;
-    struct hashTableElement *next;
+    TypeExpressionTableElement *element; // A1 
+    struct hashTableElement *next;// A1 -> A2 
 } HashTableElement;
 
 

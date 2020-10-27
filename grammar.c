@@ -1,12 +1,12 @@
 #include"grammar.h" 
-#include "typeExpressionTable.h"
+//#include "typeExpressionTable.h"
 
 int readGrammar( char* filename, GrammarCell* grammar){
 
     FILE *fptr;
     if ((fptr = fopen("grammar.txt", "r")) == NULL) {
         printf("Error! opening file");
-       return;
+       return 0;
     }
 
     char *p = NULL;
