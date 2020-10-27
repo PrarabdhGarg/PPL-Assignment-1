@@ -11,9 +11,20 @@ void printTypeExpressionTableElement(TypeExpressionTableElement element){
     //string for array type 
     char buffer[250];
 
-    printf("| %25s | %25s | %25s | %250s |\n", element.variableName, returnArrayType(element.arrayType, buffer), returnTypeOfRange(element.typeOfRange,buffer),returnTypeExpression(element, buffer));
+    if(element.typeExpression.type==5){
+        printf("| %25s | %25s | %25s | %250s |\n", element.variableName, "None","None", "None");
+    }
+    else if(element.typeExpression.type==6){
+        printf("| %25s | %25s | %25s | %250s |\n", element.variableName, "Error","Error", "Error");
+    }
+
+    else {
+        printf("| %25s | %25s | %25s | %250s |\n", element.variableName, returnArrayType(element.arrayType, buffer), returnTypeOfRange(element.typeOfRange,buffer),returnTypeExpression(element, buffer));
+
+    }
 
 }
+
 
 char * returnArrayType(int i, char * s){
 
@@ -138,10 +149,31 @@ char * returnTypeExpression(TypeExpressionTableElement element, char * s){
                 itoa(i+1,tempBuffer,10); // range_R1
                 strcat(s,tempBuffer);
                 strcat(s," = (");
-                itoa(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start,tempBuffer,10);
+                
+                
+                //to handle dynamic ranges
+                if(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start==-1)
+                {
+                    strcpy(tempBuffer,"dynamic");
+                }
+                else
+                {
+                    itoa(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start,tempBuffer,10);
+
+                }
                 strcat(s,tempBuffer);
                 strcat(s,",");
-                itoa(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end,tempBuffer,10);
+
+                if(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end==-1)
+                {
+                    strcpy(tempBuffer,"dynamic");
+                }
+                else
+                {
+                    itoa(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end,tempBuffer,10);
+
+                }
+                //itoa(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end,tempBuffer,10);
                 strcat(s,tempBuffer);
                 strcat(s,")");
             }
