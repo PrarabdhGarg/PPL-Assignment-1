@@ -33,10 +33,10 @@ void printTypeExpressionTableElement(TypeExpressionTableElement * element){
     //string for array type 
     char buffer[250];
 
-    if(element->typeExpression.type==5){
+    if(element->typeExpression.type==None){
         printf("| %25s | %25s | %25s | %250s |\n", element->variableName, "None","None", "None");
     }
-    else if(element->typeExpression.type==6){
+    else if(element->typeExpression.type==Error){
         printf("| %25s | %25s | %25s | %250s |\n", element->variableName, "Error","Error", "Error");
     }
 

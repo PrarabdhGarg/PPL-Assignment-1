@@ -14,7 +14,6 @@ void main() {
     traverseParseTree(root, typeExpressionTable);
     printf("traversed\n");
     printParseTree(root, 0);
-
     //To print the typeExpressionTable
     printTypeExpressionTable(typeExpressionTable);
 

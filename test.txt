@@ -1,6 +1,6 @@
 program ( )
 {
 declare list of variables new d w e2 : integer ;
-	declare c : integer ;
- 	c = a +b;  
+declare c : real ;
+c = a + b ;  
 }
