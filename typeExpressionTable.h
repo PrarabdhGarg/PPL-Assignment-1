@@ -1,10 +1,11 @@
-#include "typeExpression.h"
 #include "parseTree.h"
+
+#define HASH_TABLE_SIZE 3
 
 typedef enum {
     PrimitiveDataType,
-    RectangularArray,
-    JaggedArray
+    RectangularArrayDataType,
+    JaggedArrayDataType
 } ArrayType;
 
 typedef enum {
@@ -20,19 +21,21 @@ typedef struct {
     TypeExpression typeExpression;
 } TypeExpressionTableElement;
 
-typedef TypeExpressionTableElement * TypeExpressionTable;
+typedef struct hashTableElement {
+    TypeExpressionTableElement *element;
+    struct hashTableElement *next;
+} HashTableElement;
 
-void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T );
+
+typedef HashTableElement *TypeExpressionTable;
+
+TypeExpressionTable createNewTypeExpressionTable();
+void insertInTypeExpressionTable(TypeExpressionTableElement *element, TypeExpressionTable typeExpressionTable);
+TypeExpressionTableElement *getElementFromTypeExpressionTable(char *symbolName , TypeExpressionTable typeExpressionTable);
+void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T);
 void traverseDeclarationsParseTree(ParseTreeNode *declarations, TypeExpressionTable T);
 void traverseAssignmentsParseTree(ParseTreeNode *assignments, TypeExpressionTable T);
+void traverseAssignmentParseTree(ParseTreeNode *assignment, TypeExpressionTable T);
 void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTable T);
-
-void printTypeExpressionTable(TypeExpressionTableElement * T);
-void printTypeExpressionTableElement(TypeExpressionTableElement element);
-
-char * returnArrayType(int i, char * s);
-char * returnTypeOfRange(int i, char * s);
-char * returnPrimitiveDataType(int i, char * s);
-char * returnBasicElementDataType(int i, char * s);
-char * returnTypeExpression(TypeExpressionTableElement element, char * s);
-
+void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable T);
+void populateSymbolTable(ParseTreeNode *terminal, ParseTreeNode *nonTerminal, TypeExpressionTable typeExpressionTable);

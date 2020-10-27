@@ -46,7 +46,7 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
     Token* currentToken=tokenstream;
     Token* prevToken=NULL;
     while (fgets(in_line,MAXLINELENGHT,fptr) != NULL){  //loop to read one line and input it to in_line
-        p = strtok(in_line," \n");
+        p = strtok(in_line," \n\t");
         lineCount++;
 
         while(p!=NULL){  //loop to tokenise one line
@@ -69,7 +69,7 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
 
             prevToken->next=currentToken;
             
-            p = strtok(NULL," \n");
+            p = strtok(NULL," \n\t");
         }
     }
     free(currentToken);

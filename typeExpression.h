@@ -3,7 +3,9 @@ typedef enum {
     Real,
     Boolean,
     RectangularArray,
-    JaggedArray
+    JaggedArray,
+    None,
+    Error
 } DataTypes;
 
 typedef struct {
@@ -20,6 +22,7 @@ typedef struct {
     int dimensions;
     RectangularRange *ranges;
     DataTypes basicElementType;
+    int typeOfRange; // 0 - static 1 - dynamic
 } RectangularArrayTypeExpression;
 
 typedef struct {
