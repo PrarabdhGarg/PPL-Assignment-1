@@ -1,4 +1,6 @@
 .vscode/tasks.json
 *.out
 assignment 1.pdf
+*.o
+runprogram
 .vscode/launch.json
