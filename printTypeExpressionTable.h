@@ -1,4 +1,6 @@
 #include "typeExpressionTable.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 
 void printTypeExpressionTable(TypeExpressionTableElement * T);

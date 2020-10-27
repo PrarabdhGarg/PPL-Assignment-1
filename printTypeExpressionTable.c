@@ -1,7 +1,15 @@
 #include "printTypeExpressionTable.h"
 
 
-void printTypeExpressionTable(TypeExpressionTableElement * T) {
+void printTypeExpressionTable(TypeExpressionTable array) {
+    //array is array of hash table elements with size HASH_Table_sze which has
+    // hash table elments where each hash table elements contans a linked list of 
+    //typeExpressionTable elements
+
+    for(int i =0;i<HASH_TABLE_SIZE; i++){
+
+        if(array[i].)
+    }
 
 }
 void printTypeExpressionTableElement(TypeExpressionTableElement element){
@@ -140,13 +148,13 @@ char * returnTypeExpression(TypeExpressionTableElement element, char * s){
         {
             strcat(s,"rectangular_array, dimensions = ");
             //dimension
-            itoa (element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions,tempBuffer,10);
+            sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions);
             strcat(s,tempBuffer); // dimensions = 2..
 
             //To print R1= [2,3] .. 
             for(int i=0; i<element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions;i++){
                 strcat(s, ", range_R");
-                itoa(i+1,tempBuffer,10); // range_R1
+                sprintf(tempBuffer,"%d",i+1); // range_R1
                 strcat(s,tempBuffer);
                 strcat(s," = (");
                 
@@ -158,7 +166,7 @@ char * returnTypeExpression(TypeExpressionTableElement element, char * s){
                 }
                 else
                 {
-                    itoa(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start,tempBuffer,10);
+                    sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start);
 
                 }
                 strcat(s,tempBuffer);
@@ -170,10 +178,10 @@ char * returnTypeExpression(TypeExpressionTableElement element, char * s){
                 }
                 else
                 {
-                    itoa(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end,tempBuffer,10);
+                    sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end);
 
                 }
-                //itoa(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end,tempBuffer,10);
+                //sprintf(element.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end,tempBuffer,10);
                 strcat(s,tempBuffer);
                 strcat(s,")");
             }
@@ -189,23 +197,23 @@ char * returnTypeExpression(TypeExpressionTableElement element, char * s){
         else if(element.typeExpression.type==4) // Jagged array //ASSUMPTION: Not more than 3 dimensions
         {
             strcat(s,"jagged_array, dimensions = ");
-            itoa (element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.dimensions,tempBuffer,10);
+            sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.dimensions);
             strcat(s,tempBuffer);
 
             // if dimensions is 2 or 1 
             if(element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.dimensions==1 || element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.dimensions==2){
                 for(int i=0; i<element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.dimensions;i++){
                     strcat(s, ", range_R");
-                    itoa(i+1,tempBuffer,10); // range_R1
+                    sprintf(tempBuffer,"%d",i+1); // range_R1
                     strcat(s,tempBuffer);
                     strcat(s," = (");
 
                     for(int j=0; j<element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size; j++){
 
-                        itoa(element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j],tempBuffer,10);
+                        sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j]);
                         strcat(s,tempBuffer);
                         strcat(s,",");
-                         /* itoa(element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].end,tempBuffer,10);
+                         /* sprintf(element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].end,tempBuffer,10);
                          strcat(s,tempBuffer); */
                     }
 
@@ -218,13 +226,13 @@ char * returnTypeExpression(TypeExpressionTableElement element, char * s){
                 
                 // for range R1
                 strcat(s, ", range_R1");
-                //itoa(i+1,tempBuffer,10); // range_R1
+                //sprintf(i+1,tempBuffer,10); // range_R1
                 //strcat(s,tempBuffer);
                 strcat(s," = (");
-                itoa(element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0],tempBuffer,10);
+                sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0]);
                 strcat(s,tempBuffer);
                 strcat(s,",");
-                itoa(element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1],tempBuffer,10);
+                sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1]);
                 strcat(s,tempBuffer);
                 strcat(s,")");        
 
@@ -236,13 +244,13 @@ char * returnTypeExpression(TypeExpressionTableElement element, char * s){
                 
                 for(int j=1; j<sizeofRangesArray; j++){
 
-                    itoa(element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[j].size,tempBuffer,10);
+                    sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[j].size);
                     strcat(s,tempBuffer);
                     strcat(s,"[ ");
                    
                     for(int k=0; k<element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[j].size; k++){
 
-                        itoa(element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[j].sizes[k],tempBuffer,10);
+                        sprintf(tempBuffer,"%d",element.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[j].sizes[k]);
                         strcat(s,tempBuffer);
 
                         strcat(s,",");

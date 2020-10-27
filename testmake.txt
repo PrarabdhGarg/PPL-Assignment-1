@@ -1,0 +1,20 @@
+compileAll : grammar.o tokenStream.o parseTree.o typeExpressionTable.o printTypeExpressionTable.o main.o
+	gcc grammar.o tokenStream.o parseTree.o -o myprogram
+
+grammar.o : grammar.c grammar.h
+	gcc -c grammar.c
+
+tokenStream.o : tokenStream.c tokenStream.h grammar.h
+	gcc -c tokenStream.c
+
+parseTree.o : parseTree.c stack.c stack.h parseTree.h typeExpression.h tokenStream.h grammar.h
+	gcc -c parseTree.c stack.c
+
+typeExpressionTable.o : typeExpressionTable.c typeExpressionTable.h parseTree.h typeExpression.h tokenStream.h grammar.h
+	gcc -c typeExpressionTable.c
+
+printTypeExpressionTable.o : printTypeExpressionTable.c printTypeExpressionTable.h typeExpressionTable.h parseTree.h typeExpression.h tokenStream.h grammar.h
+	gcc -c printTypeExpressionTable.c
+
+main.o : main.c printTypeExpressionTable.h typeExpressionTable.h parseTree.h typeExpression.h tokenStream.h grammar.h
+	gcc -c main.c

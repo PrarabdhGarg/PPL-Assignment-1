@@ -27,7 +27,7 @@ typedef struct hashTableElement {
 } HashTableElement;
 
 
-typedef HashTableElement *TypeExpressionTable;
+typedef HashTableElement *TypeExpressionTable; // array of hashtable element where each array element contains a linkedlist of type expressiontable elements
 
 TypeExpressionTable createNewTypeExpressionTable();
 void insertInTypeExpressionTable(TypeExpressionTableElement *element, TypeExpressionTable typeExpressionTable);
