@@ -1,6 +1,4 @@
-Line 5: Type Error: b1 is of type boolean and not integer
 Line 6: Type Error: array of type real are not allowed
 Line 9: Result of division is always real
 Line 10: Integer cannot be assigned to boolean
 Line 12: Real cannot be assigned to integer
-Line 14: Varaiables must be declared before they are used
