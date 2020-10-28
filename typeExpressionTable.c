@@ -257,7 +257,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                 index = atoi(rowDefJaggedArray->node.nonLeafNode.children[2].node.leafNode.lexeme);
                 if(index != i + start - 1) {
                     // TODO Line Number
-                    printf("Error: %3d: The row you are trying to define is not mentioned in the range.\n", 0);
+                    printf("Error: %3d: Invalid index of row.\n", 0);
                     //error
                 }
                 size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);
