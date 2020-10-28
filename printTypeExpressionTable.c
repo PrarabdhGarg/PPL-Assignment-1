@@ -14,7 +14,7 @@ void printTypeExpressionTable(HashTableElement * array) {
     for(int i =0;i<HASH_TABLE_SIZE; i++){
 
         if(array[i].element!=NULL){
-            temp=array;
+            temp=array+i;
 
             do
             {
