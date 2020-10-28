@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
+int writeToFile;
+FILE *fileptr;
 void printTypeExpressionTable(HashTableElement * T);
 void printTypeExpressionTableElement(TypeExpressionTableElement * element);
 

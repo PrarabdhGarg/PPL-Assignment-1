@@ -6,10 +6,36 @@ void printTypeExpressionTable(HashTableElement * array) {
     // hash table elments where each hash table elements contans a linked list of 
     //typeExpressionTable elements
     //printf("called printTypeExpressionTable\n");
+
+    
+
+    writeToFile=1;
+
+   // use appropriate location if you are using MacOS or Linux
+   fileptr = fopen("typeExpressionTableOutput.txt","w");
+
+   if(fileptr == NULL)
+   {
+      printf("Error! in writing to typeExpressionTableOutput.txt");   
+      writeToFile=0;           
+   }
+
+   
+
+   
+   
     printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
     printf("| %-20s | %-20s | %-20s | %-80s |\n","Variable Name","Data Type", "Type of Range", "Type Expression");
    // printf("---------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+
+    //write to file
+     if(writeToFile){
+
+    fprintf(fileptr,"+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+    fprintf(fileptr,"| %-20s | %-20s | %-20s | %-150s |\n","Variable Name","Data Type", "Type of Range", "Type Expression");
+    fprintf(fileptr,"+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+     }
 
     HashTableElement * temp;
     for(int i =0;i<HASH_TABLE_SIZE; i++){
@@ -29,6 +55,7 @@ void printTypeExpressionTable(HashTableElement * array) {
         }
     }
 
+    writeToFile? fclose(fileptr) : 1; 
     //printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
 
 
@@ -47,11 +74,25 @@ void printTypeExpressionTableElement(TypeExpressionTableElement * element){
         printf("| %-20s | %-20s | %-20s | %-80s |\n", element->variableName, "None","not_applicable", "not_applicable");
         printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
 
+        //write to file
+        if(writeToFile){
+            fprintf(fileptr,"| %-20s | %-20s | %-20s | %-150s |\n", element->variableName, "None","not_applicable", "not_applicable");
+            fprintf(fileptr,"+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+ 
+        }
     }
     else if(element->typeExpression.type==Error){
         printf("| %-20s | %-20s | %-20s | %-80s |\n", element->variableName, "Error","not_applicable", "not_applicable");
         printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
 
+        //writeToFile
+        if (writeToFile)
+        {
+            fprintf(fileptr,"| %-20s | %-20s | %-20s | %-150s |\n", element->variableName, "Error","not_applicable", "not_applicable");
+            fprintf(fileptr,"+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+
+        }
+        
     }
 
     
@@ -64,7 +105,14 @@ void printTypeExpressionTableElement(TypeExpressionTableElement * element){
         printf("| %-20s | %-20s | %-20s | %-80s |\n", element->variableName,buffer1,buffer2,buffer3);
         printf("+-------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
 
-    
+        //write to File
+        if (writeToFile)
+        {
+            fprintf(fileptr,"| %-20s | %-20s | %-20s | %-150s |\n", element->variableName,buffer1,buffer2,buffer3);
+            fprintf(fileptr,"+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n");
+
+        }
+        
     }
 
 }
