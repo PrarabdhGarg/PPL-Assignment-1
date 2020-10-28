@@ -72,6 +72,7 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
             p = strtok(NULL," \n\t\r");
         }
     }
+    printf("Line Count = %d\n", lineCount);
     free(currentToken);
     prevToken->next=NULL;  //freeing one last extra node and setting pointer of last node to NULL
     fclose(fptr);

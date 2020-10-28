@@ -2,7 +2,7 @@
 
 void printParseTree(ParseTreeNode *root, int depth){
     printf("| %30s | %20s | %100s | %30s | %4s |\n" , "SymbolName", "TokenType", "Lexeme/DataType", "Line/RuleNumber", "Depth");
-    printParseTreeRec(root, depth);
+    printParseTreeRec(root, 0);
 }
 
 void printParseTreeRec(ParseTreeNode *root, int depth){
@@ -62,11 +62,11 @@ void printParseTreeRec(ParseTreeNode *root, int depth){
 
     printf("%4d |\n", depth);
 
-    if(root -> tokenType == 0)
+    if(root -> tokenType == Terminal)
         return;
 
     for(int i = 0; i < (root -> node).nonLeafNode.noOfChildren; i++){
-        printParseTreeRec(&(root -> node).nonLeafNode.children[i], depth + 1);
+        printParseTreeRec((root -> node).nonLeafNode.children + i, depth + 1);
     }
     return;
 }

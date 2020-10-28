@@ -7,7 +7,7 @@ MultipleVariables identifier MultipleVariables
 MultipleVariables identifier identifier
 DataType PrimitiveDataType
 DataType array RectangularDimensions of PrimitiveDataType
-DataType jagged array  [ integerConstant .. integerConstant ] EmptyDimensions of PrimitiveDataType ; RowDefJaggedArray
+DataType jagged array  [ integerConstant .. integerConstant ] EmptyDimensions of PrimitiveDataType RowDefJaggedArray
 PrimitiveDataType integer ;
 PrimitiveDataType boolean ;
 PrimitiveDataType real ;
@@ -18,7 +18,7 @@ EmptyDimensions [ ] [ ]
 EmptyDimensions [ ]
 RowDefJaggedArray R1 [ integerConstant ] : size integerConstant : values { ValuesList } RowDefJaggedArray
 RowDefJaggedArray R1 [ integerConstant ] : size integerConstant : values { ValuesList }
-ValuesList NumbersList ; ValuesList
+ValuesList NumbersList ValuesList
 ValuesList NumbersList
 NumbersList integerConstant NumbersList
 NumbersList integerConstant
