@@ -282,13 +282,13 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         }
     }
 
-    else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 9){//JaggedArrayType
+    else if(dataType->node.nonLeafNode.ruleNumber == 9){//JaggedArrayType
         ParseTreeNode *emptyDimensions, startIndex, endIndex, *rowDefJaggedArray, *valuesList, *numbersList;
         int start, end, dimensions, size, index, size1;
         bool error = false;
-        emptyDimensions = declaration -> node.nonLeafNode.children + 7;
-        startIndex = declaration -> node.nonLeafNode.children[3];
-        endIndex = declaration -> node.nonLeafNode.children[5];
+        emptyDimensions = dataType -> node.nonLeafNode.children + 7;
+        startIndex = dataType -> node.nonLeafNode.children[3];
+        endIndex = dataType -> node.nonLeafNode.children[5];
         start = atoi(startIndex.node.leafNode.lexeme);
         end = atoi(endIndex.node.leafNode.lexeme);
         emptyDimensions -> node.nonLeafNode.typeExpression.type = None;
@@ -306,6 +306,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.dimensions = dimensions;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges = malloc((end - start + 2) * sizeof(JaggedRange));
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].size = 2;
+            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes = malloc(2 * sizeof(int));
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] = start;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] = end;
  
@@ -322,26 +323,42 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                 size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);
                 if(size <= 0){
                     //error
-                    // is 0 size allowed??
+                    if(printErrors) {
+                        printf("Error: %3d: Size of row should be a positive integer.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                    }
                     error = true;
                     break;
                 }
                 dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size = size;
                 dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes = malloc(size * sizeof(int));
+                
+                valuesList = rowDefJaggedArray->node.nonLeafNode.children + 10;
 
                 for(int j = 0; j < size; j++){
                     size1 = 0;
                     if(j != size-1 && valuesList->node.nonLeafNode.ruleNumber == 21){
                             //error
+                            if(printErrors) {
+                                printf("Error: %3d: Number of rows are less than exprected.\n", rowDefJaggedArray->node.nonLeafNode.children->node.leafNode.lineNumber);
+                            }
                             error = true;
                             break;
                     }
                     numbersList = valuesList->node.nonLeafNode.children;
                     while(numbersList->node.nonLeafNode.ruleNumber != 24){
                         size1++;
+                        if(numbersList->node.nonLeafNode.ruleNumber == 22){
+                            numbersList = numbersList->node.nonLeafNode.children+1;
+                        }
+                        else{
+                            break;
+                        }
                     }
                     if(size1 == 0){
                         //error
+                        if(printErrors) {
+                            printf("Error: %3d: Dimensions of a row cannot be zero in length.\n", rowDefJaggedArray->node.nonLeafNode.children->node.leafNode.lineNumber);
+                        }
                         error = true;
                         break;
                     }
@@ -352,7 +369,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                         valuesList = valuesList->node.nonLeafNode.children + 1;
                 }
 
-                if(i != start - end + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 18){
+                if(i != end - start + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 18){
                     //error less declarations
                     error = true;
                     if(printErrors) {
@@ -382,7 +399,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             
             for(int i = 0; i < end - start + 1; i++){
                 index = atoi(rowDefJaggedArray->node.nonLeafNode.children[2].node.leafNode.lexeme);
-                if(index != i + start - 1){
+                if(index != i + start){
                     //error
                     error = true;
                     if(printErrors) {
@@ -396,6 +413,9 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                 dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[i] = size;
                 if(size <= 0){
                     //error
+                    if(printErrors) {
+                        printf("Error: %3d: Size of row should be a positive integer.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                    }
                     error = true;
                 }
                 else{
@@ -403,17 +423,34 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                     for(int j = 0; j < size; j++){
                         if(j != size-1 && valuesList->node.nonLeafNode.ruleNumber == 21){
                             //error
+                            if(printErrors) {
+                                printf("Error: %3d: Number of enteries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                            }
                             error = true;
                             break;
                         }
                         numbersList = valuesList->node.nonLeafNode.children;
-                        if(numbersList->node.nonLeafNode.ruleNumber == 23){
+                        if(j != size -1 && numbersList->node.nonLeafNode.ruleNumber == 23){
                             //error
+                            if(printErrors) {
+                                printf("Error: %3d: Number of enteries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                            }
+                            error = true;
+                            break;
+                        }
+                        if(j == size - 1 && numbersList->node.nonLeafNode.ruleNumber != 23) {
+                            // error
+                            if(printErrors) {
+                                printf("Error: %3d: Number of enteries greater than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                            }
                             error = true;
                             break;
                         }
                         else if(numbersList->node.nonLeafNode.ruleNumber == 24){
                             //error
+                            if(printErrors) {
+                                printf("Error: %3d: Number of enteries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                            }
                             error = true;
                             break;
                         }
@@ -421,6 +458,9 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                             numbersList = numbersList->node.nonLeafNode.children + 1;
                             if(numbersList->node.nonLeafNode.ruleNumber != 24){
                                 //error
+                                if(printErrors) {
+                                    printf("Error: %3d: Number of enteries more than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                                }
                                 error = true;
                                 break;
                             }
@@ -430,7 +470,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                     }
                 }
 
-                if(i != start - end + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 18){
+                if(i != end - start && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 18){
                     //error less declarations
                     error = true;
                     if(printErrors) {
@@ -438,14 +478,14 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                     }
                     break;
                 }
-                if(i == end - start + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 19){
+                if(i == end - start && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 19){
                     //error more declarations
                     error = true;
                     if(printErrors) {
                         printf("Error: %3d: The number of indices provided are greater than expected\n", rowDefJaggedArray->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                     }
                 }
-                if(i != end - start + 1)
+                if(i != end - start)
                     rowDefJaggedArray = rowDefJaggedArray->node.nonLeafNode.children + 12;
             }
         }
@@ -492,6 +532,10 @@ void populateSymbolTable(ParseTreeNode *terminal, ParseTreeNode *nonTerminal, Ty
         case JaggedArray:
             element->arrayType = JaggedArrayDataType;
             element->typeOfRange = Static;
+            break;
+        case Error:
+            element->typeExpression.type = Error;
+            element->typeOfRange = NotApplicable;
             break;
         default:
             if(printErrors) {
@@ -746,7 +790,6 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                     }
                     if(i == typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber != 40){
                         //error more index
-                        
                         if(printErrors) {
                             printf("Error: %3d: The number of indices provided are greater than expected\n", singleTerm->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                         }
@@ -780,7 +823,7 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                         if(index <= typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end 
                             && index >= typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start)
                         {
-                            continue;
+                            
                         }
                         else{
                             //error;
@@ -795,6 +838,10 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                     }
                     indexNode->node.nonLeafNode.typeExpression.type = None;
                     indexList->node.nonLeafNode.typeExpression.type = None;
+
+                    if(indexList->node.nonLeafNode.ruleNumber == 39) {
+                        indexList = indexList->node.nonLeafNode.children+1;
+                    }
                 }
                 singleTerm->node.nonLeafNode.typeExpression.type = Integer;
             }
@@ -993,59 +1040,96 @@ bool checkInteger(char *name, TypeExpressionTable T){
 }
 
 bool compareTypeExpression(TypeExpression t1, TypeExpression t2) {
-    if(t1.type == Error || t2.type == Error)
+    if (t1.type == Error || t2.type == Error)
         return false;
-    if(t1.type == None || t2.type == None)
+    if (t1.type == None || t2.type == None)
         return false;
-    if(t1.type == t2.type) {
-        if(t1.type == Integer || t1.type == Real || t1.type == Boolean) {
+    if (t1.type == t2.type)
+    {
+        if (t1.type == Integer || t1.type == Real || t1.type == Boolean)
+        {
             return true;
-        } else if(t1.type == RectangularArray) {
-             if(t1.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType == t2.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType) {
-                if(t1.arrayTypeExpression.rectangularArrayTypeExpression.dimensions == t2.arrayTypeExpression.rectangularArrayTypeExpression.dimensions) {
-                   for(int i  = 0; i < t1.arrayTypeExpression.rectangularArrayTypeExpression.dimensions; i++) {
-                       if(t1.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start == t2.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start
-                       && t1.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end == t2.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end)
-                        continue;
-                    return false;
-                   }
-                   return true;
-                } else {
-                    return false;
-                }
-            } else {
-                 return false;
-             }
-        } else {
-            if(t1.arrayTypeExpression.jaggedArrayTypeExpression.basicDataType == t2.arrayTypeExpression.jaggedArrayTypeExpression.basicDataType) {
-                if(t1.arrayTypeExpression.jaggedArrayTypeExpression.dimensions == t2.arrayTypeExpression.jaggedArrayTypeExpression.dimensions) {
-                    if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] 
-                    && t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1]) {
-                        int size = t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] - t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] + 2;
-                        for(int i = 1; i < size; i++) {
-                            if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size) {
-                                for(int j = 0; j < t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size; j++) {
-                                    if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j]) {
-                                        continue;
-                                    }
-                                    return false;
-                                }
-                            } else {
-                                return false;
-                            }
-                        }
-                    } else {
+        }
+        else if (t1.type == RectangularArray)
+        {
+            if (t1.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType == t2.arrayTypeExpression.rectangularArrayTypeExpression.basicElementType)
+            {
+                if (t1.arrayTypeExpression.rectangularArrayTypeExpression.dimensions == t2.arrayTypeExpression.rectangularArrayTypeExpression.dimensions)
+                {
+                    for (int i = 0; i < t1.arrayTypeExpression.rectangularArrayTypeExpression.dimensions; i++)
+                    {
+                        if (t1.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start == t2.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start && t1.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end == t2.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end)
+                            continue;
                         return false;
                     }
-                } else {
+                    return true;
+                }
+                else
+                {
                     return false;
                 }
-            } else {
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (t1.arrayTypeExpression.jaggedArrayTypeExpression.basicDataType == t2.arrayTypeExpression.jaggedArrayTypeExpression.basicDataType)
+            {
+                if (t1.arrayTypeExpression.jaggedArrayTypeExpression.dimensions == t2.arrayTypeExpression.jaggedArrayTypeExpression.dimensions)
+                {
+                    if(t1.arrayTypeExpression.jaggedArrayTypeExpression.dimensions == 2){
+                        if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] && t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1]) {
+                            for(int i = 0; i < t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] - t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] + 1; i++) {
+                                if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[i] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[i]) {
+                                    continue;
+                                } else {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else{
+                        if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] && t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1]) {
+                            for(int i = 1; i < t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] - t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] + 2; i++) {
+                                if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size == t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size) {
+                                    for(int j = 0; j < t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size; j++) {
+                                        if(t1.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j] != t2.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j]) {
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
                 return false;
             }
             return true;
         }
-    } else {
+    }
+    else
+    {
         return false;
     }
 }
