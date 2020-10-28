@@ -1,7 +1,7 @@
 export -g
 
-compileAll : grammar.o tokenStream.o parseTree.o stack.o typeExpressionTable.o printTypeExpressionTable.o main.o
-	gcc grammar.o tokenStream.o parseTree.o stack.o typeExpressionTable.o printTypeExpressionTable.o main.o -o runprogram
+compileAll : grammar.o tokenStream.o parseTree.o stack.o typeExpressionTable.o printTypeExpressionTable.o printParseTree.o main.o
+	gcc grammar.o tokenStream.o parseTree.o stack.o typeExpressionTable.o printTypeExpressionTable.o printParseTree.o main.o -o runprogram
 
 grammar.o : grammar.c grammar.h
 	gcc -c grammar.c
@@ -18,10 +18,13 @@ parseTree.o : parseTree.c stack.h parseTree.h
 typeExpressionTable.o : typeExpressionTable.c typeExpressionTable.h
 	gcc -c typeExpressionTable.c
 
+printParseTree.o : printParseTree.c printParseTree.h
+	gcc -c printParseTree.c
+
 printTypeExpressionTable.o : printTypeExpressionTable.c printTypeExpressionTable.h
 	gcc -c printTypeExpressionTable.c
 
-main.o : main.c printTypeExpressionTable.h
+main.o : main.c printParseTree.h
 	gcc -c main.c
 
 clean : 

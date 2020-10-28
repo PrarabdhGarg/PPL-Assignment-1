@@ -38,4 +38,7 @@ void traverseAssignmentsParseTree(ParseTreeNode *assignments, TypeExpressionTabl
 void traverseAssignmentParseTree(ParseTreeNode *assignment, TypeExpressionTable T);
 void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTable T);
 void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable T);
+void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T);
 void populateSymbolTable(ParseTreeNode *terminal, ParseTreeNode *nonTerminal, TypeExpressionTable typeExpressionTable);
+bool compareTypeExpression(TypeExpression t1, TypeExpression t2);
+bool checkInteger(char *name, TypeExpressionTable T);

@@ -1,4 +1,4 @@
-#include "printTypeExpressionTable.h"
+#include "printParseTree.h"
 
 void main(int argc, char *argv[]) {
 

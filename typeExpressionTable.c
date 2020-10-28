@@ -171,7 +171,12 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             
         if(startIndex -> node.nonLeafNode.ruleNumber == 41){
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].start = -1;
-            // check for integer???
+            if(checkInteger(startIndex->node.nonLeafNode.children->node.leafNode.lexeme, T)){
+                //can't be checked at run time
+            }
+            else {
+                //error not of integer type
+            }
             dynamic = true;
         }
         else if(startIndex -> node.nonLeafNode.ruleNumber == 42){
@@ -180,7 +185,12 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
 
         if(endIndex -> node.nonLeafNode.ruleNumber == 41){
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].end = -1;
-            // check for integer???
+            if(checkInteger(endIndex->node.nonLeafNode.children->node.leafNode.lexeme, T)){
+                //can't be checked at run time
+            }
+            else {
+                //error not of integer type
+            }
             dynamic = true;
         }
         else if(endIndex -> node.nonLeafNode.ruleNumber == 42){
@@ -190,6 +200,8 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         if(dynamic){
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.typeOfRange = 1;
         }
+
+        //start > end error
 
         primitiveDataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges = ranges;
         dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges = ranges;
@@ -210,13 +222,14 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
 
     else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 9){//JaggedArrayType
         ParseTreeNode *emptyDimensions, startIndex, endIndex, *rowDefJaggedArray;
-        int start, end, dimensions, size;
+        int start, end, dimensions, size, index;
         emptyDimensions = declaration -> node.nonLeafNode.children + 7;
         startIndex = declaration -> node.nonLeafNode.children[3];
         endIndex = declaration -> node.nonLeafNode.children[5];
         start = atoi(startIndex.node.leafNode.lexeme);
         end = atoi(endIndex.node.leafNode.lexeme);
         emptyDimensions -> node.nonLeafNode.typeExpression.type = None;
+        rowDefJaggedArray = dataType->node.nonLeafNode.children + 11;
 
         if(start > end){
             //error
@@ -229,13 +242,26 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] = start;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] = end;
 
-            /*for(int i = 1; i < start - end + 2; i++){
-
-            }*/
+            for(int i = 1; i < end - start + 2; i++){
+                index = atoi(rowDefJaggedArray->node.nonLeafNode.children[2].node.leafNode.lexeme);
+                if(index != i + start - 1){
+                    //error
+                }
+                size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);
+                //check values and get size
+                if(i != start - end + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 18){
+                    //error less declarations
+                    break;
+                }
+                if(i == end - start + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 19){
+                    //error more declarations
+                }
+                if(i != end - start + 1)
+                    rowDefJaggedArray = rowDefJaggedArray->node.nonLeafNode.children + 12;
+            }
         }
         else if(emptyDimensions -> node.nonLeafNode.ruleNumber == 17){
             dimensions = 2;
-            size = end - start + 1;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.dimensions = dimensions;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges = malloc(2 * sizeof(JaggedRange));
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].size = 2;
@@ -246,10 +272,26 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].size = size;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes = malloc(size * sizeof(int));
             
-            rowDefJaggedArray = dataType->node.nonLeafNode.children + 11;
-            /*for(int i = 0; i < size; i++){
-                dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[i] =  
-            }*/
+            
+            for(int i = 0; i < end - start + 1; i++){
+                index = atoi(rowDefJaggedArray->node.nonLeafNode.children[2].node.leafNode.lexeme);
+                if(index != i + start - 1){
+                    //error
+                }
+                size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);
+                dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[i] = size;
+                //check values
+
+                if(i != start - end + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 18){
+                    //error less declarations
+                    break;
+                }
+                if(i == end - start + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 19){
+                    //error more declarations
+                }
+                if(i != end - start + 1)
+                    rowDefJaggedArray = rowDefJaggedArray->node.nonLeafNode.children + 12;
+            }
         }
     }
 
@@ -323,15 +365,252 @@ void traverseAssignmentParseTree(ParseTreeNode *assignment, TypeExpressionTable 
 }
 
 void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable T){
-    if(expression->node.nonLeafNode.ruleNumber == 29){ //term
-
-    }
-    else if(expression->node.nonLeafNode.ruleNumber == 28){ //term plusminus expression
-
+    switch(expression->node.nonLeafNode.ruleNumber){
+        case 28:
+            traverseExpressionParseTree(expression->node.nonLeafNode.children, T);
+            traverseExpressionParseTree(expression->node.nonLeafNode.children + 2, T);
+            if(compareTypeExpression(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression, expression->node.nonLeafNode.children[2].node.nonLeafNode.typeExpression)){
+                if(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == Integer 
+                    || expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == Real
+                    || expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == JaggedArray
+                    || expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == RectangularArray)
+                {
+                    expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
+                }
+                else{
+                    expression->node.nonLeafNode.typeExpression.type = Error;
+                    //error
+                } 
+            }
+            else{
+                expression->node.nonLeafNode.typeExpression.type = Error;
+                //error
+            }
+            break;
+        case 29:
+            traverseExpressionParseTree(expression->node.nonLeafNode.children, T);
+            expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
+            break;
+        case 30:
+            traverseExpressionParseTree(expression->node.nonLeafNode.children, T);
+            traverseExpressionParseTree(expression->node.nonLeafNode.children + 2, T);
+            if(compareTypeExpression(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression, expression->node.nonLeafNode.children[2].node.nonLeafNode.typeExpression)){
+                if(expression->node.nonLeafNode.children[1].node.nonLeafNode.ruleNumber == 45){ // multiplication
+                    if(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == Integer 
+                        || expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == Real
+                        || expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == JaggedArray
+                        || expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == RectangularArray)
+                    {
+                        expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
+                    }
+                    else{
+                        expression->node.nonLeafNode.typeExpression.type = Error;
+                        //error
+                    } 
+                }
+                else if(expression->node.nonLeafNode.children[1].node.nonLeafNode.ruleNumber == 46){ // division
+                    if(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == Integer 
+                        || expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == Real
+                        )
+                    {
+                        expression->node.nonLeafNode.typeExpression.type = Real;
+                    }
+                    else{
+                        expression->node.nonLeafNode.typeExpression.type = Error;
+                        //error
+                    }
+                }
+            }
+            else{
+                expression->node.nonLeafNode.typeExpression.type = Error;
+                //error
+            }
+            break;
+        case 31:
+            traverseExpressionParseTree(expression->node.nonLeafNode.children, T);
+            expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
+            break;
+        case 32:
+            traverseExpressionParseTree(expression->node.nonLeafNode.children, T);
+            traverseExpressionParseTree(expression->node.nonLeafNode.children + 2, T);
+            if(compareTypeExpression(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression, expression->node.nonLeafNode.children[2].node.nonLeafNode.typeExpression)){
+                if(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == Boolean)
+                {
+                    expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
+                }
+                else{
+                    expression->node.nonLeafNode.typeExpression.type = Error;
+                    //error
+                }
+            }
+            else{
+                expression->node.nonLeafNode.typeExpression.type = Error;
+                //error
+            }
+            break;
+        case 33:
+            traverseExpressionParseTree(expression->node.nonLeafNode.children, T);
+            expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
+            break;
+        case 34:
+            traverseSingleTerm(expression->node.nonLeafNode.children, T);
+            traverseExpressionParseTree(expression->node.nonLeafNode.children + 2, T);
+            if(compareTypeExpression(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression, expression->node.nonLeafNode.children[2].node.nonLeafNode.typeExpression)){
+                if(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression.type == Boolean)
+                {
+                    expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
+                }
+                else{
+                    expression->node.nonLeafNode.typeExpression.type = Error;
+                    //error
+                }
+            }
+            else{
+                expression->node.nonLeafNode.typeExpression.type = Error;
+                //error
+            }
+            break;
+        case 35:
+            traverseSingleTerm(expression->node.nonLeafNode.children, T);
+            expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
+            break;
     }
 }
 
-bool compare(TypeExpression t1, TypeExpression t2) {
+void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
+    TypeExpression typeExpression;
+    ParseTreeNode *indexList, *indexNode;
+    int index;
+    switch(singleTerm->node.nonLeafNode.ruleNumber){
+        case 36:
+            typeExpression = getElementFromTypeExpressionTable(singleTerm->node.nonLeafNode.children->node.leafNode.lexeme, T)->typeExpression;
+            if(typeExpression.type != RectangularArray && typeExpression.type != JaggedArray){
+                //error
+                singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                return;
+            }
+            else if(typeExpression.type == RectangularArray){
+                indexList = singleTerm->node.nonLeafNode.children + 2;
+                for(int i = 0; i < typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions; i++){
+                    if(i != typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber == 40){
+                        //error less index
+                        indexList->node.nonLeafNode.typeExpression.type == Error;
+                        indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
+                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                        return;
+                    }
+                    if(i == typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber != 40){
+                        //error more index
+                        indexList->node.nonLeafNode.typeExpression.type == Error;
+                        indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
+                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                        return;
+                    }
+
+                    indexNode = indexList->node.nonLeafNode.children;
+                    
+                    if(indexNode->node.nonLeafNode.ruleNumber == 41){
+                        if(checkInteger(indexNode->node.nonLeafNode.children->node.leafNode.lexeme, T)){
+                            //can't be checked at run time
+                            continue;
+                        }
+                        else {
+                            //error not of integer type
+                        }
+                    }
+                    else if(indexNode->node.nonLeafNode.ruleNumber == 42){
+                        index = atoi(indexNode->node.nonLeafNode.children->node.leafNode.lexeme);
+
+                        if(index <= typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end 
+                            && index >= typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start)
+                        {
+                            continue;
+                        }
+                        else{
+                            //error;
+                            indexList->node.nonLeafNode.typeExpression.type == Error;
+                            indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
+                            singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                            return;
+                        }
+                    }
+                    indexNode->node.nonLeafNode.typeExpression.type = None;
+                    indexList->node.nonLeafNode.typeExpression.type = None;
+                }
+                singleTerm->node.nonLeafNode.typeExpression.type = Integer;
+            }
+            else{ // jagged array 
+                indexList = singleTerm->node.nonLeafNode.children + 2;
+                for(int i = 0; i < typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions; i++){
+                    if(i != typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber == 40){
+                        //error less index
+                        indexList->node.nonLeafNode.typeExpression.type == Error;
+                        indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
+                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                        return;
+                    }
+                    if(i == typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber != 40){
+                        //error more index
+                        indexList->node.nonLeafNode.typeExpression.type == Error;
+                        indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
+                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                        return;
+                    }
+
+                    indexNode = indexList->node.nonLeafNode.children;
+                    
+                    if(indexNode->node.nonLeafNode.ruleNumber == 41){
+                        if(checkInteger(indexNode->node.nonLeafNode.children->node.leafNode.lexeme, T)){
+                            //can't be checked at run time
+                            continue;
+                        }
+                        else {
+                            //error not of integer type
+                        }
+                    }
+                    else if(indexNode->node.nonLeafNode.ruleNumber == 42){
+                        index = atoi(indexNode->node.nonLeafNode.children->node.leafNode.lexeme);
+
+                        /*if(index <= typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end 
+                            && index >= typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start)
+                        {
+                            continue;
+                        }
+                        else{
+                            //error;
+                            indexList->node.nonLeafNode.typeExpression.type == Error;
+                            indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
+                            singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                            return;
+                        }*/ // some changes
+                    }
+                }
+
+                singleTerm->node.nonLeafNode.typeExpression.type = Integer;
+            }
+            break;
+        case 37:
+            singleTerm->node.nonLeafNode.typeExpression = getElementFromTypeExpressionTable(singleTerm->node.nonLeafNode.children->node.leafNode.lexeme, T)->typeExpression;
+            break;
+        case 38:
+            singleTerm->node.nonLeafNode.typeExpression.type = Integer;
+            break;
+    }
+    return;
+}
+
+bool checkInteger(char *name, TypeExpressionTable T){
+    TypeExpression typeExpression;
+    typeExpression = getElementFromTypeExpressionTable(name, T)->typeExpression;
+
+    if(typeExpression.type == Integer){
+        return true;
+    }
+    else 
+        return false;
+}
+
+bool compareTypeExpression(TypeExpression t1, TypeExpression t2) {
     if(t1.type == t2.type) {
         if(t1.type == PrimitiveDataType) {
             return true;

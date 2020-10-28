@@ -1,5 +1,7 @@
 program ( )
 {
+declare list of variables a b c d : array [ 2 .. 6 ] of integer ;
+declare list of variables new d w e2 : integer ;
 declare c : real ;
 declare list of variables xfg yukyf zjfc w1ijv : array [ 2 .. c ] [ 3 .. 4 ] [ 5 .. 9 ] [ 1 .. 10 ] of integer ;
 declare list of variables new d w e2 :  integer ;
