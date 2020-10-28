@@ -19,6 +19,7 @@ typedef struct {
     ArrayType arrayType;
     TypeOfRange typeOfRange;
     TypeExpression typeExpression;
+    int lineNumber;
 } TypeExpressionTableElement;
 
 typedef struct hashTableElement {
