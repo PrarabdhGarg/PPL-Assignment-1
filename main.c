@@ -16,7 +16,7 @@ void main(int argc, char *argv[]) {
     else{
         tokeniseSourcecode("test.txt", tokenStream);
     }
-    printf("Token Stream Created Sucessfully Length = %d\n", length);
+    printf("Token Stream Created Sucessfully\n");
 
     ParseTreeNode *root = (ParseTreeNode *) malloc(sizeof(ParseTreeNode));
 
@@ -34,26 +34,27 @@ void main(int argc, char *argv[]) {
     case 2:
         createParseTree(root, tokenStream, grammar, length);
         printf("Parse Tree Creation complete\n");
-        traverseParseTree(root, typeExpressionTable);
+        traverseParseTree(root, typeExpressionTable, true);
         printf("Parse Tree Traversal Complete\n");
         break;
     case 3:
+        printGrammar(length, grammar);
         createParseTree(root, tokenStream, grammar, length);
-        printf("Parse Tree Creation complete\n");
-        traverseParseTree(root, typeExpressionTable);
-        printf("Parse Tree Traversal Complete\n");
+        // printf("Parse Tree Creation complete\n");
+        traverseParseTree(root, typeExpressionTable, false);
+        // printf("Parse Tree Traversal Complete\n");
         printParseTree(root, 0);
         break;
     case 4:
         createParseTree(root, tokenStream, grammar, length);
-        printf("Parse Tree Creation complete\n");
-        traverseParseTree(root, typeExpressionTable);
-        printf("Parse Tree Traversal Complete\n");
+        // printf("Parse Tree Creation complete\n");
+        traverseParseTree(root, typeExpressionTable, false);
+        // printf("Parse Tree Traversal Complete\n");
         printTypeExpressionTable(typeExpressionTable);
         break;        
     default:
         printf("Please enter a valid option!!!\n");
         break;
     }
-    }while(option!=0);
+    } while(option!=0);
 }

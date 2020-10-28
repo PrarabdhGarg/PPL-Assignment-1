@@ -33,7 +33,7 @@ typedef HashTableElement *TypeExpressionTable;
 TypeExpressionTable createNewTypeExpressionTable();
 void insertInTypeExpressionTable(TypeExpressionTableElement *element, TypeExpressionTable typeExpressionTable);
 TypeExpressionTableElement *getElementFromTypeExpressionTable(char *symbolName , TypeExpressionTable typeExpressionTable);
-void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T);
+void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T, bool printErrors);
 void traverseDeclarationsParseTree(ParseTreeNode *declarations, TypeExpressionTable T);
 void traverseAssignmentsParseTree(ParseTreeNode *assignments, TypeExpressionTable T);
 void traverseAssignmentParseTree(ParseTreeNode *assignment, TypeExpressionTable T);
