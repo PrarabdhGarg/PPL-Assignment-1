@@ -455,6 +455,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         else{
             dataType->node.nonLeafNode.typeExpression.type = JaggedArray;
         }
+        declaration->node.nonLeafNode.typeExpression = dataType->node.nonLeafNode.typeExpression;
     }
 
     if(declaration -> node.nonLeafNode.ruleNumber == 3){
