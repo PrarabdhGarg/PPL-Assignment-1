@@ -14,7 +14,7 @@ void main(int argc, char *argv[]) {
         //printf(" argc : %d v  YIPEEEE%s\n",argc,argv[1]);
     }
     else{
-        tokeniseSourcecode("sourcecode.txt", tokenStream);
+        tokeniseSourcecode("test.txt", tokenStream);
     }
     printf("Token Stream Created Sucessfully Length = %d\n", length);
     ParseTreeNode *root = (ParseTreeNode *) malloc(sizeof(ParseTreeNode));
