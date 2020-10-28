@@ -1,5 +1,7 @@
 export -g
 
+TESTFILE = "sourcecode.txt"
+
 compileAll : grammar.o tokenStream.o parseTree.o stack.o typeExpressionTable.o printTypeExpressionTable.o printParseTree.o main.o
 	gcc grammar.o tokenStream.o parseTree.o stack.o typeExpressionTable.o printTypeExpressionTable.o printParseTree.o main.o -o runprogram
 
@@ -29,3 +31,8 @@ main.o : main.c printParseTree.h
 
 clean : 
 	rm -rf $(wildcard *.o)
+	rm -rf typeExpressionTableOutput.txt
+	rm -rf runprogram
+
+run: runprogram
+	./runprogram ${TESTFILE}

@@ -78,7 +78,7 @@ int readGrammar( char* filename, GrammarCell* grammar){
     }
     printf("Line count %d\n",lineCount);
     fclose(fptr);
-    // printGrammar(lineCount,grammar);
+    //printGrammar(lineCount,grammar);
     return lineCount;
 
 }
@@ -87,15 +87,13 @@ void printGrammar(int lineCount, GrammarCell* grammar)
 {
 
     for(int i=0; i<lineCount; i++){
-        //if(i==15){continue;}
-      printf(" %d %s<N> ",i+1,grammar[i].nonTerminalName);
+       
+      printf(" %d %s ",i+1,grammar[i].nonTerminalName);
       GrammarNode * tempNode= grammar[i].rule;
       while (tempNode!=NULL)
       {
-          char c='A';
-          tempNode->symbolType?(c='N'):(c='T');
-          printf("%s<%c> ",tempNode->symbolName,c);
-          tempNode=tempNode->next;
+            printf("%s ",tempNode->symbolName);
+            tempNode=tempNode->next;
       }
       printf("\n");      
 

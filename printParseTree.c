@@ -1,7 +1,9 @@
 #include "printParseTree.h"
 
 void printParseTree(ParseTreeNode *root, int depth){
-    printf("| %30s | %20s | %100s | %30s | %4s |\n" , "SymbolName", "TokenType", "Lexeme/DataType", "Line/RuleNumber", "Depth");
+    printf("+-----------------------+-------------------+------------------------------------------------------------------------------------------------------+----------------+------+\n");
+    printf("| %21s |%18s | %100s |%15s |%4s |\n" , "SymbolName", "TokenType", "Lexeme/DataType", "Line/RuleNumber", "Depth");
+    printf("+-----------------------+-------------------+------------------------------------------------------------------------------------------------------+----------------+------+\n");
     printParseTreeRec(root, 0);
 }
 
@@ -9,12 +11,12 @@ void printParseTreeRec(ParseTreeNode *root, int depth){
     if(root == NULL)
         return;
 
-    printf("%30s | ", root -> symbolName);
+    printf("| %21s | ", root -> symbolName);
     
     switch(root -> tokenType){
         case 0 : printf("%20s", "Terminal | ");
                  printf("%100s | ", (root -> node).leafNode.lexeme);
-                 printf("LineNumber %19d | ", (root -> node).leafNode.lineNumber);
+                 printf("LineNumber %3d | ", (root -> node).leafNode.lineNumber);
                  break;
         case 1 : printf("%20s", "Non-Terminal | ");
                  /* switch ((root->node).nonLeafNode.typeExpression.type)
@@ -56,12 +58,13 @@ void printParseTreeRec(ParseTreeNode *root, int depth){
                     printf("%100s | ", result);
                     free(result);
                  }
-                 printf("RuleNumber %19d | ", (root -> node).nonLeafNode.ruleNumber);
+                 printf("RuleNumber %3d | ", (root -> node).nonLeafNode.ruleNumber);
                  break;
     }
 
     printf("%4d |\n", depth);
 
+    printf("+-----------------------+-------------------+------------------------------------------------------------------------------------------------------+----------------+------+\n");
     if(root -> tokenType == Terminal)
         return;
 
