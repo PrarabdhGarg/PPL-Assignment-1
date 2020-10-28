@@ -32,6 +32,7 @@ main.o : main.c printParseTree.h
 clean : 
 	rm -rf $(wildcard *.o)
 	rm -rf typeExpressionTableOutput.txt
+	rm -rf runprogram
 
 run: runprogram
 	./runprogram ${TESTFILE}
