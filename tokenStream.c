@@ -35,7 +35,7 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
 	FILE *fptr;
     if ((fptr = fopen(filename, "r")) == NULL) {
         printf("Error! opening file");
-       return;
+       return NULL;
     }
     
     char* p;
@@ -82,7 +82,7 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
 bool isKeyword(char* p){
     int i=0;
     for(;i<13;i++){
-        if(strcmp(p,KEYWORDS+i)==0)
+        if(strcmp(p,KEYWORDS[i])==0)
             break;
     }
     if(i==13)
