@@ -134,7 +134,16 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             
             if(startIndex -> node.nonLeafNode.ruleNumber == 41){
                 rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].start = -1;
-                // check for integer???
+                if(checkInteger(startIndex->node.nonLeafNode.children->node.leafNode.lexeme, T)){
+                    //can't be checked at run time
+                    
+                    printf("Warning: %3d: Dynamic range of array. Cannot be checked at compile time\n", startIndex->node.nonLeafNode.children->node.leafNode.lineNumber);
+                    continue;
+                }
+                else {
+                    printf("Error : %3d : %dth dimmension must be an integer\n", startIndex->node.nonLeafNode.children->node.leafNode.lineNumber, i+1);
+                    //error not of integer type
+                }
                 dynamic = true;
             }
             else if(startIndex -> node.nonLeafNode.ruleNumber == 42){
@@ -143,7 +152,16 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
 
             if(endIndex -> node.nonLeafNode.ruleNumber == 41){
                 rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].end = -1;
-                // check for integer???
+                if(checkInteger(endIndex->node.nonLeafNode.children->node.leafNode.lexeme, T)){
+                    //can't be checked at run time
+                    
+                    printf("Warning: %3d: Dynamic range of array. Cannot be checked at compile time\n", endIndex->node.nonLeafNode.children->node.leafNode.lineNumber);
+                    continue;
+                }
+                else {
+                    printf("Error : %3d : %dth dimmension must be an integer\n", endIndex->node.nonLeafNode.children->node.leafNode.lineNumber, i+1);
+                    //error not of integer type
+                }
                 dynamic = true;
             }
             else if(endIndex -> node.nonLeafNode.ruleNumber == 42){
@@ -228,15 +246,16 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
     }
 
     else if(dataType -> node.nonLeafNode.children[noOfChildren-1].node.nonLeafNode.ruleNumber == 9){//JaggedArrayType
-        ParseTreeNode *emptyDimensions, startIndex, endIndex, *rowDefJaggedArray;
-        int start, end, dimensions, size, index;
+        ParseTreeNode *emptyDimensions, startIndex, endIndex, *rowDefJaggedArray, *valuesList, *numbersList;
+        int start, end, dimensions, size, index, size1;
+        bool error = false;
         emptyDimensions = declaration -> node.nonLeafNode.children + 7;
         startIndex = declaration -> node.nonLeafNode.children[3];
         endIndex = declaration -> node.nonLeafNode.children[5];
         start = atoi(startIndex.node.leafNode.lexeme);
         end = atoi(endIndex.node.leafNode.lexeme);
         emptyDimensions -> node.nonLeafNode.typeExpression.type = None;
-        rowDefJaggedArray = dataType->node.nonLeafNode.children + 11;
+        rowDefJaggedArray = dataType->node.nonLeafNode.children + 10;
 
         if(start > end) {
             //error
@@ -250,24 +269,57 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].size = 2;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] = start;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] = end;
-
+ 
             for(int i = 1; i < end - start + 2; i++){
                 index = atoi(rowDefJaggedArray->node.nonLeafNode.children[2].node.leafNode.lexeme);
                 if(index != i + start - 1) {
                     printf("Error: %3d: Invalid index of row.\n", rowDefJaggedArray->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                     //error
+                    error = true;
+                    break;
                 }
                 size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);
-                //check values and get size
+                if(size <= 0){
+                    //error
+                    // is 0 size allowed??
+                    error = true;
+                    break;
+                }
+                dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].size = size;
+                dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes = malloc(size * sizeof(int));
+
+                for(int j = 0; j < size; j++){
+                    size1 = 0;
+                    if(j != size-1 && valuesList->node.nonLeafNode.ruleNumber == 21){
+                            //error
+                            error = true;
+                            break;
+                    }
+                    numbersList = valuesList->node.nonLeafNode.children;
+                    while(numbersList->node.nonLeafNode.ruleNumber != 24){
+                        size1++;
+                    }
+                    if(size1 == 0){
+                        //error
+                        error = true;
+                        break;
+                    }
+                    else{
+                        dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[i].sizes[j] = size1;
+                    }
+                    if(valuesList->node.nonLeafNode.ruleNumber == 20)
+                        valuesList = valuesList->node.nonLeafNode.children + 1;
+                }
 
                 if(i != start - end + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 18){
                     //error less declarations
+                    error = true;
                     printf("Error: %3d: The number of indices provided are lesser than expected\n", rowDefJaggedArray->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                     break;
                 }
                 if(i == end - start + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 19){
                     //error more declarations
-                    
+                    error = true;
                     printf("Error: %3d: The number of indices provided are greater than expected\n", rowDefJaggedArray->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                 }
                 if(i != end - start + 1)
@@ -281,34 +333,76 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].size = 2;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes = malloc(2 * sizeof(int));
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] = start;
-            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] = end;
-        
-            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].size = size;
-            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes = malloc((size+1) * sizeof(int));
-            
+            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] = end;            
             
             for(int i = 0; i < end - start + 1; i++){
                 index = atoi(rowDefJaggedArray->node.nonLeafNode.children[2].node.leafNode.lexeme);
                 if(index != i + start - 1){
                     //error
+                    error = true;
                     printf("Error: %3d: The row you are trying to define is not mentioned in the range.\n", rowDefJaggedArray->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                 }
                 size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);
+                dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].size = size;
+                dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes = malloc((size) * sizeof(int));
+                
                 dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[i] = size;
-                //check values
+                if(size <= 0){
+                    //error
+                    error = true;
+                }
+                else{
+                    valuesList = rowDefJaggedArray->node.nonLeafNode.children + 10;
+                    for(int j = 0; j < size; j++){
+                        if(j != size-1 && valuesList->node.nonLeafNode.ruleNumber == 21){
+                            //error
+                            error = true;
+                            break;
+                        }
+                        numbersList = valuesList->node.nonLeafNode.children;
+                        if(numbersList->node.nonLeafNode.ruleNumber == 23){
+                            //error
+                            error = true;
+                            break;
+                        }
+                        else if(numbersList->node.nonLeafNode.ruleNumber == 24){
+                            //error
+                            error = true;
+                            break;
+                        }
+                        else if(numbersList->node.nonLeafNode.ruleNumber == 22){
+                            numbersList = numbersList->node.nonLeafNode.children + 1;
+                            if(numbersList->node.nonLeafNode.ruleNumber != 24){
+                                //error
+                                error = true;
+                                break;
+                            }
+                        }
+                        if(valuesList->node.nonLeafNode.ruleNumber == 20)
+                            valuesList = valuesList->node.nonLeafNode.children + 1;
+                    }
+                }
 
                 if(i != start - end + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 18){
                     //error less declarations
+                    error = true;
                     printf("Error: %3d: The number of indices provided are lesser than expected\n", rowDefJaggedArray->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                     break;
                 }
                 if(i == end - start + 1 && rowDefJaggedArray->node.nonLeafNode.ruleNumber != 19){
                     //error more declarations
+                    error = true;
                     printf("Error: %3d: The number of indices provided are greater than expected\n", rowDefJaggedArray->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                 }
                 if(i != end - start + 1)
                     rowDefJaggedArray = rowDefJaggedArray->node.nonLeafNode.children + 12;
             }
+        }
+        if(error){
+            dataType->node.nonLeafNode.typeExpression.type = Error;
+        }
+        else{
+            dataType->node.nonLeafNode.typeExpression.type = JaggedArray;
         }
     }
 
