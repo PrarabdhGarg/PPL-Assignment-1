@@ -15,7 +15,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                 if(strcmp(root -> symbolName, grammar[i].nonTerminalName) == 0) {
                     nextToken = tempToken;
                     GrammarNode *rule = grammar[i].rule;
-                    Stack *tempStack = newStack();
+                    // Stack *tempStack = newStack();
                     int count = 0;
                     while(rule != NULL) {
                         count++;
@@ -42,8 +42,6 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                         result = createParseTreeReccursive(&(root -> node.nonLeafNode.children[j]), grammar, grammarLength);
                         if(result < 0) {
                             break;
-                        } else {
-                            pop(tempStack);
                         }
                     }
                     if(result < 0) {
@@ -52,7 +50,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     return 1;
                 }
             }
-            printf("Couldn't find a suitable rule for %s. \n", root -> symbolName);
+            // printf("Couldn't find a suitable rule for %s. \n", root -> symbolName);
             return -1;
         } else if(root -> tokenType == Terminal) {
             if(nextToken != NULL) {
@@ -60,7 +58,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     if(strcmp(nextToken -> lexeme, root -> symbolName) == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;
-                        printf("Token Consumed = %s\n", nextToken -> lexeme);
+                        // printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
@@ -69,7 +67,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     if(isOperator(root -> symbolName) == true && strcmp(nextToken -> lexeme, root -> symbolName) == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;
-                        printf("Token Consumed = %s\n", nextToken -> lexeme);
+                        // printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
@@ -78,7 +76,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     if(strcmp(root -> symbolName, "integerConstant") == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;\
-                        printf("Token Consumed = %s\n", nextToken -> lexeme);
+                        // printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
@@ -87,7 +85,7 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     if(isSymbol(root -> symbolName) == true && strcmp(nextToken -> lexeme, root -> symbolName) == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;
-                        printf("Token Consumed = %s\n", nextToken -> lexeme);
+                        // printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
@@ -96,19 +94,19 @@ int createParseTreeReccursive(ParseTreeNode *root, GrammarCell *grammar, int gra
                     if(strcmp("identifier", root -> symbolName) == 0) {
                         root -> node.leafNode.lexeme = nextToken -> lexeme;
                         root -> node.leafNode.lineNumber = nextToken -> lineNumber;
-                        printf("Token Consumed = %s\n", nextToken -> lexeme);
+                        // printf("Token Consumed = %s\n", nextToken -> lexeme);
                         nextToken = nextToken -> next;
                         return 1;
                     }
                 }
-                printf("Token Mismatch. BackTracking........\n");
+                // printf("Token Mismatch. BackTracking........\n");
                 return -1;
             } else {
-                printf("Token Stream Empty. BackTracking......\n");
+                // printf("Token Stream Empty. BackTracking......\n");
                 return -1;
             }
         } else {
-            printf("Error occoured as symbol was neither Terminal nor NonTerminal");
+            // printf("Error occoured as symbol was neither Terminal nor NonTerminal");
             return -1;
         }
     } else {

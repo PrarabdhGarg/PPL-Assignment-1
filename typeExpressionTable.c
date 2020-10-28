@@ -41,6 +41,7 @@ TypeExpressionTableElement *getElementFromTypeExpressionTable(char *symbolName ,
         if(strcmp(next -> element -> variableName, symbolName) == 0) {
             return next -> element;
         }
+        next = next -> next;
     }
     return NULL;
 }
@@ -51,7 +52,7 @@ void traverseParseTree(ParseTreeNode *root, TypeExpressionTable T ){
     assignments = (root -> node).nonLeafNode.children + 5;
     root -> node.nonLeafNode.typeExpression.type = None;
     traverseDeclarationsParseTree(declarations, T);
-    //traverseAssignmentsParseTree(assignments, T);
+    traverseAssignmentsParseTree(assignments, T);
 }
 
 void traverseDeclarationsParseTree(ParseTreeNode *declarations, TypeExpressionTable T){
@@ -94,7 +95,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             primitiveDataType -> node.nonLeafNode.typeExpression.type = Boolean;
         }
     }
-    else if(dataType -> node.nonLeafNode.ruleNumber == 8){ //RectangularArrayType
+    else if(dataType -> node.nonLeafNode.ruleNumber == 8) { //RectangularArrayType
         int dimensions = 1, i;
         DataTypes type;
         ParseTreeNode *rectangularDimensions, *rectangularDimension, *startIndex, *endIndex;
@@ -171,11 +172,13 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             
         if(startIndex -> node.nonLeafNode.ruleNumber == 41){
             rectangularDimension -> node.nonLeafNode.typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[dimensions-1].start = -1;
-            if(checkInteger(startIndex->node.nonLeafNode.children->node.leafNode.lexeme, T)){
+            if(checkInteger(startIndex->node.nonLeafNode.children->node.leafNode.lexeme, T)) {
                 //can't be checked at run time
             }
             else {
                 //error not of integer type
+                // TODO Line Number
+                printf("Error: %3d: Array ranges must be of type Integer\n", 0);
             }
             dynamic = true;
         }
@@ -190,6 +193,8 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             }
             else {
                 //error not of integer type
+                // TODO Line Number
+                printf("Error: %3d: Array ranges must be of type Integer\n", 0);
             }
             dynamic = true;
         }
@@ -231,8 +236,9 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
         emptyDimensions -> node.nonLeafNode.typeExpression.type = None;
         rowDefJaggedArray = dataType->node.nonLeafNode.children + 11;
 
-        if(start > end){
+        if(start > end) {
             //error
+            // I think we don't need to consider this case
         }
         else if(emptyDimensions -> node.nonLeafNode.ruleNumber == 16){
             dimensions = 3;
@@ -244,7 +250,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
 
             for(int i = 1; i < end - start + 2; i++){
                 index = atoi(rowDefJaggedArray->node.nonLeafNode.children[2].node.leafNode.lexeme);
-                if(index != i + start - 1){
+                if(index != i + start - 1) {
                     //error
                 }
                 size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);
@@ -270,7 +276,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] = end;
         
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].size = size;
-            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes = malloc(size * sizeof(int));
+            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes = malloc((size+1) * sizeof(int));
             
             
             for(int i = 0; i < end - start + 1; i++){
@@ -345,7 +351,7 @@ void traverseAssignmentsParseTree(ParseTreeNode *assignments, TypeExpressionTabl
 
     if(assignments->node.nonLeafNode.ruleNumber == 25){
         traverseAssignmentParseTree(assignments->node.nonLeafNode.children, T);
-        traverseAssignmentsParseTree(assignments+1, T);
+        traverseAssignmentsParseTree(assignments->node.nonLeafNode.children+1, T);
     }
     else if(assignments->node.nonLeafNode.ruleNumber == 26){
         traverseAssignmentParseTree(assignments->node.nonLeafNode.children, T);
@@ -354,14 +360,24 @@ void traverseAssignmentsParseTree(ParseTreeNode *assignments, TypeExpressionTabl
 }
 
 void traverseAssignmentParseTree(ParseTreeNode *assignment, TypeExpressionTable T){
-    ParseTreeNode *singleNode, *expression;
+    ParseTreeNode *singleTerm, *expression;
 
-    singleNode = assignment->node.nonLeafNode.children;
+    singleTerm = assignment->node.nonLeafNode.children;
     expression = assignment->node.nonLeafNode.children + 2;
 
     traverseExpressionParseTree(expression, T);
+    traverseSingleTerm(singleTerm, T);
+
+    if(compareTypeExpression(singleTerm->node.nonLeafNode.typeExpression, expression->node.nonLeafNode.typeExpression)){
+        assignment->node.nonLeafNode.typeExpression = singleTerm->node.nonLeafNode.typeExpression;
+    }
+    else{
+        assignment->node.nonLeafNode.typeExpression.type = Error;
+        //error type mismatch
+    }
 
     //compare type expression of epression and singlenode
+
 }
 
 void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable T){
@@ -379,6 +395,8 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                 }
                 else{
                     expression->node.nonLeafNode.typeExpression.type = Error;
+                    // TODO Line Number
+                    printf("Error: %3d: Arithmatic operations cannot operate on Boolean operands\n", 0);
                     //error
                 } 
             }
@@ -405,6 +423,8 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                     }
                     else{
                         expression->node.nonLeafNode.typeExpression.type = Error;
+                        // TODO Line Number
+                        printf("Error: %3d: Arithmatic operations cannot operate on Boolean operands\n", 0);
                         //error
                     } 
                 }
@@ -417,7 +437,8 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                     }
                     else{
                         expression->node.nonLeafNode.typeExpression.type = Error;
-                        //error
+                        // TODO Line Number
+                        printf("Error: %3d: Division must have both operands of type Integer or Real\n", 0);
                     }
                 }
             }
@@ -441,6 +462,8 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                 else{
                     expression->node.nonLeafNode.typeExpression.type = Error;
                     //error
+                    // TODO Line Number
+                    printf("Error: %3d: Boolean operations needs boolean operands\n", 0);
                 }
             }
             else{
@@ -463,6 +486,8 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                 else{
                     expression->node.nonLeafNode.typeExpression.type = Error;
                     //error
+                    // TODO Line Number
+                    printf("Error: %3d: Boolean operations needs boolean operands\n", 0);
                 }
             }
             else{
@@ -475,6 +500,7 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
             expression->node.nonLeafNode.typeExpression = expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression;
             break;
     }
+    return;
 }
 
 void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
@@ -486,6 +512,10 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
             typeExpression = getElementFromTypeExpressionTable(singleTerm->node.nonLeafNode.children->node.leafNode.lexeme, T)->typeExpression;
             if(typeExpression.type != RectangularArray && typeExpression.type != JaggedArray){
                 //error
+                if(typeExpression.type == Integer || typeExpression.type == Real || typeExpression.type == Boolean) {
+                    // TODO Line Number
+                    printf("Error: %3d: Primitive data types cannot be indexed\n", 0);
+                }
                 singleTerm->node.nonLeafNode.typeExpression.type = Error;
                 return;
             }
@@ -494,6 +524,8 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                 for(int i = 0; i < typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions; i++){
                     if(i != typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber == 40){
                         //error less index
+                        // TODO Line Number
+                        printf("Error: %3d: The number of indices provided are lesser than expected. Array slices are not supported\n", 0);
                         indexList->node.nonLeafNode.typeExpression.type == Error;
                         indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
                         singleTerm->node.nonLeafNode.typeExpression.type = Error;
@@ -501,6 +533,8 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                     }
                     if(i == typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber != 40){
                         //error more index
+                        // TODO Line Number
+                        printf("Error: %3d: The number of indices provided are greater than expected\n", 0);
                         indexList->node.nonLeafNode.typeExpression.type == Error;
                         indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
                         singleTerm->node.nonLeafNode.typeExpression.type = Error;
@@ -512,9 +546,12 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                     if(indexNode->node.nonLeafNode.ruleNumber == 41){
                         if(checkInteger(indexNode->node.nonLeafNode.children->node.leafNode.lexeme, T)){
                             //can't be checked at run time
+                            // TODO
+                            printf("Warning: %3d: Dynamic range of array. Cannot be checked at runtime\n", indexNode->node.nonLeafNode.children->node.leafNode.lineNumber);
                             continue;
                         }
                         else {
+                            printf("Error : %3d : %dth dimmension must be an integer\n", indexNode->node.nonLeafNode.children->node.leafNode.lineNumber, i+1);
                             //error not of integer type
                         }
                     }
@@ -528,8 +565,9 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                         }
                         else{
                             //error;
+                            printf("Error: %3d : Array index out of bounds for %dth dimmension.\n", indexList->node.nonLeafNode.children -> node.nonLeafNode.children -> node.leafNode.lineNumber, i+1);
                             indexList->node.nonLeafNode.typeExpression.type == Error;
-                            indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
+                            indexNode->node.nonLeafNode.typeExpression.type == Error;
                             singleTerm->node.nonLeafNode.typeExpression.type = Error;
                             return;
                         }
@@ -540,54 +578,157 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                 singleTerm->node.nonLeafNode.typeExpression.type = Integer;
             }
             else{ // jagged array 
+                int index1, index2, index3, dimensions, start, end;
+                bool dynamic = false;
                 indexList = singleTerm->node.nonLeafNode.children + 2;
-                for(int i = 0; i < typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions; i++){
-                    if(i != typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber == 40){
-                        //error less index
-                        indexList->node.nonLeafNode.typeExpression.type == Error;
-                        indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
-                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
-                        return;
-                    }
-                    if(i == typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.dimensions -1 && indexList->node.nonLeafNode.ruleNumber != 40){
-                        //error more index
-                        indexList->node.nonLeafNode.typeExpression.type == Error;
-                        indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
-                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
-                        return;
-                    }
+                indexNode = indexList->node.nonLeafNode.children;
 
-                    indexNode = indexList->node.nonLeafNode.children;
-                    
+                dimensions = singleTerm->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.dimensions;
+                if(indexList->node.nonLeafNode.ruleNumber == 40){
+                    //error less 
+                    // TODO Line Number
+                    printf("Error: %3d: The number of indices provided are lesser than expected\n", 0);
+                    indexList->node.nonLeafNode.typeExpression.type == Error;
+                    indexNode->node.nonLeafNode.typeExpression.type == Error;
+                    singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                    return;
+                }
+                else if(indexList->node.nonLeafNode.ruleNumber == 39){
                     if(indexNode->node.nonLeafNode.ruleNumber == 41){
-                        if(checkInteger(indexNode->node.nonLeafNode.children->node.leafNode.lexeme, T)){
-                            //can't be checked at run time
-                            continue;
-                        }
-                        else {
-                            //error not of integer type
-                        }
+                        //dynamic warning
+                         // TODO
+                        printf("Warning: %3d: Dynamic range of array. Cannot be checked at runtime\n", 0);
+                        // check integer
+                        dynamic = true;
                     }
                     else if(indexNode->node.nonLeafNode.ruleNumber == 42){
-                        index = atoi(indexNode->node.nonLeafNode.children->node.leafNode.lexeme);
-
-                        /*if(index <= typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].end 
-                            && index >= typeExpression.arrayTypeExpression.rectangularArrayTypeExpression.ranges[i].start)
-                        {
-                            continue;
-                        }
-                        else{
-                            //error;
-                            indexList->node.nonLeafNode.typeExpression.type == Error;
-                            indexList->node.nonLeafNode.children->node.nonLeafNode.typeExpression.type = Error;
-                            singleTerm->node.nonLeafNode.typeExpression.type = Error;
-                            return;
-                        }*/ // some changes
+                        index1 = atoi(indexNode->node.nonLeafNode.children->node.leafNode.lexeme);
                     }
                 }
+                
+                indexList = indexList->node.nonLeafNode.children + 1;
+                indexNode = indexList->node.nonLeafNode.children;
+                if(indexList->node.nonLeafNode.ruleNumber == 40){
+                    if(dimensions == 3){
+                        //error less 
+                        // TODO Line Number
+                        printf("Error: %3d: The number of indices provided are lesser than expected\n", 0);
+                        indexList->node.nonLeafNode.typeExpression.type == Error;
+                        indexNode->node.nonLeafNode.typeExpression.type == Error;
+                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                        return;
+                    }
+                    else{
+                        if(indexNode->node.nonLeafNode.ruleNumber == 41){
+                            //dynamic warning
+                             // TODO
+                            printf("Warning: %3d: Dynamic range of array. Cannot be checked at runtime\n", 0);
+                            // check integer
+                            dynamic = true;
+                        }
+                        else if(indexNode->node.nonLeafNode.ruleNumber == 42){
+                            index2 = atoi(indexNode->node.nonLeafNode.children->node.leafNode.lexeme);
+                        }   
+                    }
+                }
+                else if(indexList->node.nonLeafNode.ruleNumber == 39){
+                    if(dimensions == 2){
+                        //error more
+                        // TODO Line Number
+                        printf("Error: %3d: The number of indices provided are greater than expected\n", 0);
+                        indexList->node.nonLeafNode.typeExpression.type == Error;
+                        indexNode->node.nonLeafNode.typeExpression.type == Error;
+                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                        return;
+                    }
+                    else {
+                        if(indexNode->node.nonLeafNode.ruleNumber == 41){
+                            //dynamic warning
+                            // TODO
+                            dynamic = true;
+                            printf("Warning: %3d: Dynamic range of array. Cannot be checked at runtime\n", 0);
+                            // check integer
+                        }
+                        else if(indexNode->node.nonLeafNode.ruleNumber == 42){
+                            index2 = atoi(indexNode->node.nonLeafNode.children->node.leafNode.lexeme);
+                        }
+                        indexList = indexList->node.nonLeafNode.children + 1;
+                        indexNode = indexList->node.nonLeafNode.children;
+                    }
+                }
+                
+                if(indexList->node.nonLeafNode.ruleNumber == 40){
+                    if(indexNode->node.nonLeafNode.ruleNumber == 41){
+                        // TODO
+                        printf("Warning: %3d: Dynamic range of array. Cannot be checked at runtime\n", 0);
+                        //dynamic warning
+                        // check integer
+                        dynamic = true;
+                    }
+                    else if(indexNode->node.nonLeafNode.ruleNumber == 42){
+                        index3 = atoi(indexNode->node.nonLeafNode.children->node.leafNode.lexeme);
+                    }
+                }
+                else if(indexList->node.nonLeafNode.ruleNumber == 39){
+                    //error more 
+                    // TODO Line Number
+                    printf("Error: %3d: The number of indices provided are greater than expected\n", 0);
+                    indexList->node.nonLeafNode.typeExpression.type == Error;
+                    indexNode->node.nonLeafNode.typeExpression.type == Error;
+                    singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                    return;
+                }
 
-                singleTerm->node.nonLeafNode.typeExpression.type = Integer;
+                start = typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0];
+                end = typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1];
+                
+                if(index1 <= end && index1 >= start)
+                {
+                    //do nothing
+                }
+                else{
+                    //error not in range
+                    // TODO Line Number
+                    printf("Error: %3d: Array index not in range\n", 0);
+                    return;
+                }
+                
+                if(dimensions == 2){
+                    if(index2 <= typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[index1 - start] && index2 >= 0){
+                        singleTerm->node.nonLeafNode.typeExpression.type = Integer;
+                    }
+                    else{
+                        //error out of bound
+                        // TODO Line Number
+                        printf("Error: %3d: Array index out of bounds\n", 0);
+                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                        return;
+                    }
+                }
+                else if(dimensions == 3){
+                    if(index2 <= typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[index1-start+1].size && index2 >= 0){
+                        //do nothing
+                    }
+                    else{
+                        //error out of bounds
+                        // TODO Line Number
+                        printf("Error: %3d: Array index out of bounds\n", 0);
+                        return;
+                    }
+
+                    if(index3 >= 0 && index3 <= typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[index1-start+1].sizes[index2]){
+                        singleTerm->node.nonLeafNode.typeExpression.type = Integer;
+                    }
+                    else{
+                        //error out of bound
+                        // TODO Line Number
+                        printf("Error: %3d: Array index out of bounds\n", 0);
+                        singleTerm->node.nonLeafNode.typeExpression.type = Error;
+                        return;
+                    }
+                }
             }
+            
             break;
         case 37:
             singleTerm->node.nonLeafNode.typeExpression = getElementFromTypeExpressionTable(singleTerm->node.nonLeafNode.children->node.leafNode.lexeme, T)->typeExpression;
