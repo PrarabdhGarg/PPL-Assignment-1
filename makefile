@@ -1,3 +1,5 @@
+export -g
+
 compileAll : grammar.o tokenStream.o parseTree.o stack.o typeExpressionTable.o printTypeExpressionTable.o main.o
 	gcc grammar.o tokenStream.o parseTree.o stack.o typeExpressionTable.o printTypeExpressionTable.o main.o -o runprogram
 

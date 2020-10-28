@@ -1,6 +1,7 @@
 program ( )
 {
+declare list of variables xfg yukyf zjfc w1ijv : array [ 2 .. 6 ] [ 3 .. 4 ] [ 5 .. 9 ] [ 1 .. 10 ] of integer ;
 declare list of variables new d w e2 : integer ;
 declare c : real ;
-c = a + b ;  
+c = a + b ; 
 }
