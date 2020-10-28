@@ -2,6 +2,30 @@
 
 bool printErrors = true;
 
+char *getType(TypeExpression typeExpression) {
+    char *type = (char *) malloc(sizeof(char) * 30);
+    switch (typeExpression.type) {
+    case Integer:
+        type = "Integer";
+        break;
+    case Real:
+        type = "Real";
+        break;
+    case Boolean:
+        type = "Boolean";
+        break;
+    case RectangularArray:
+        type = "Rectangular Array";
+        break;
+    case JaggedArray:
+        type = "Jagged Array";
+        break;
+    default:
+        type = "Error";
+        break;
+    }
+}
+
 int calculateHash(char *str) {
     int hash = 0;
     for(int i = 0; i < strlen(str); i++) {
@@ -416,7 +440,9 @@ void traverseAssignmentParseTree(ParseTreeNode *assignment, TypeExpressionTable 
         //error type mismatch
         // TODO: Modify print statement to include type of left and right if possible
         if(printErrors) {
-            printf("Error: %3d: Type mismatch.\n", assignment->node.nonLeafNode.children[1].node.leafNode.lineNumber);
+            char *type1 = getType(singleTerm->node.nonLeafNode.typeExpression);
+            char *type2 = getType(expression->node.nonLeafNode.typeExpression);
+            printf("Error: %3d: Value of type %s cannot be assigned to %s.\n", assignment->node.nonLeafNode.children[1].node.leafNode.lineNumber, type2, type1);
         }
     }
 }
@@ -447,7 +473,12 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                 
                 // TODO: Modify print statement to include type of left and right if possible
                 if(printErrors) {
-                    printf("Error: %3d: Type mismatch.\n", expression->node.nonLeafNode.children[1].node.nonLeafNode.children[0].node.leafNode.lineNumber);
+                    char *type1 = getType(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression);
+                    char *type2 = getType(expression->node.nonLeafNode.children[2].node.nonLeafNode.typeExpression);
+                    if(strcmp(expression->node.nonLeafNode.children[1].node.nonLeafNode.children->symbolName, "+") == 0)
+                        printf("Error: %3d: Value of type %s cannot be added with value of type %s.\n", expression->node.nonLeafNode.children[1].node.nonLeafNode.children[0].node.leafNode.lineNumber, type1, type2);
+                    else
+                        printf("Error: %3d: Value of type %s cannot be subtracted from value of type %s.\n", expression->node.nonLeafNode.children[1].node.nonLeafNode.children[0].node.leafNode.lineNumber, type2, type1);
                 }
                 //error
             }
@@ -498,7 +529,12 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                 
                 // TODO: Modify print statement to include type of left and right if possible
                 if(printErrors) {
-                    printf("Error: %3d: Type mismatch.\n", expression->node.nonLeafNode.children[1].node.nonLeafNode.children[0].node.leafNode.lineNumber);
+                    char *type1 = getType(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression);
+                    char *type2 = getType(expression->node.nonLeafNode.children[2].node.nonLeafNode.typeExpression);
+                    if(strcmp(expression->node.nonLeafNode.children[1].node.nonLeafNode.children->symbolName, "*") == 0)
+                        printf("Error: %3d: Value of type %s cannot be multiplied with value of type %s.\n", expression->node.nonLeafNode.children[1].node.nonLeafNode.children[0].node.leafNode.lineNumber, type1, type2);
+                    else
+                        printf("Error: %3d: Value of type %s cannot be divided from value of type %s.\n", expression->node.nonLeafNode.children[1].node.nonLeafNode.children[0].node.leafNode.lineNumber, type2, type1);
                 }
                 //error
             }
@@ -529,7 +565,9 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                 
                 // TODO: Modify print statement to include type of left and right if possible
                 if(printErrors) {
-                    printf("Error: %3d: Type mismatch.\n", expression->node.nonLeafNode.children[1].node.nonLeafNode.children[0].node.leafNode.lineNumber);
+                    char *type1 = getType(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression);
+                    char *type2 = getType(expression->node.nonLeafNode.children[2].node.nonLeafNode.typeExpression);
+                    printf("Error: %3d: Logical Or Operation cannot be applied between values of type %s and %s.\n", expression->node.nonLeafNode.children[1].node.leafNode.lineNumber, type1, type2);
                 }
                 //error
             }
@@ -560,7 +598,9 @@ void traverseExpressionParseTree(ParseTreeNode *expression, TypeExpressionTable 
                 
                 // TODO: Modify print statement to include type of left and right if possible
                 if(printErrors) {
-                    printf("Error: %3d: Type mismatch.\n", expression->node.nonLeafNode.children[1].node.nonLeafNode.children[0].node.leafNode.lineNumber);
+                    char *type1 = getType(expression->node.nonLeafNode.children[0].node.nonLeafNode.typeExpression);
+                    char *type2 = getType(expression->node.nonLeafNode.children[2].node.nonLeafNode.typeExpression);
+                    printf("Error: %3d: Logical And Operation cannot be applied between values of type %s and %s.\n", expression->node.nonLeafNode.children[1].node.leafNode.lineNumber, type1, type2);
                 }
                 //error
             }
