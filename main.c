@@ -8,8 +8,8 @@ void main(int argc, char *argv[]) {
     int length = readGrammar("grammar.txt", grammar);
     printf("Grammar Read Sucessfully\n");
 
-    
-    argv[1]!=NULL?tokeniseSourcecode(argv[1], tokenStream) :tokeniseSourcecode("test.txt", tokenStream);
+    printf("argc: %d argv[1] %s", argc, argv[1]);
+    argv[1]!=NULL?tokeniseSourcecode(argv[1], tokenStream) :tokeniseSourcecode("sourcecode.txt", tokenStream);
     
         
     printf("Token Stream Created Sucessfully Length = %d\n", length);
