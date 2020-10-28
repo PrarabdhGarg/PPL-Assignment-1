@@ -35,22 +35,20 @@ void main(int argc, char *argv[]) {
         createParseTree(root, tokenStream, grammar, length);
         printf("Parse Tree Creation complete\n");
         traverseParseTree(root, typeExpressionTable);
-        printf("traversed\n");
+        printf("Parse Tree Traversal Complete\n");
         break;
     case 3:
         createParseTree(root, tokenStream, grammar, length);
         printf("Parse Tree Creation complete\n");
         traverseParseTree(root, typeExpressionTable);
-        printf("traversed\n");
+        printf("Parse Tree Traversal Complete\n");
         printParseTree(root, 0);
         break;
     case 4:
         createParseTree(root, tokenStream, grammar, length);
         printf("Parse Tree Creation complete\n");
         traverseParseTree(root, typeExpressionTable);
-        printf("traversed\n");
-        printParseTree(root, 0);
-        printf("\n\n");
+        printf("Parse Tree Traversal Complete\n");
         printTypeExpressionTable(typeExpressionTable);
         break;        
     default:
