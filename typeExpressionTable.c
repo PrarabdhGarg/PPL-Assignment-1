@@ -517,6 +517,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
 void populateSymbolTable(ParseTreeNode *terminal, ParseTreeNode *nonTerminal, TypeExpressionTable typeExpressionTable){
     TypeExpressionTableElement *element = (TypeExpressionTableElement *) malloc(sizeof(TypeExpressionTableElement));
     element->variableName = terminal->node.leafNode.lexeme;
+    element->lineNumber = terminal->node.leafNode.lineNumber;
     
     switch (nonTerminal -> node.nonLeafNode.typeExpression.type) {
         case Integer:
