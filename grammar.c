@@ -1,3 +1,8 @@
+/*  ID:	2018A7PS0198P 		Name:	Prarabdh Nilesh Garg
+    ID:	2018A7PS0223P 		Name:	Nalin Deepak
+    ID:	2018A7PS0252P 		Name:	Akshat Gupta
+    ID:	2018A7PS0257P 		Name:	Prakhar Mishra*/
+
 #include"grammar.h" 
 //#include "typeExpressionTable.h"
 
@@ -76,7 +81,7 @@ int readGrammar( char* filename, GrammarCell* grammar){
             p = strtok(NULL," ");
         }
     }
-    printf("Line count %d\n",lineCount);
+    // printf("Line count %d\n",lineCount);
     fclose(fptr);
     // printGrammar(lineCount,grammar);
     return lineCount;

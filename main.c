@@ -1,3 +1,8 @@
+/*  ID:	2018A7PS0198P 		Name:	Prarabdh Nilesh Garg
+    ID:	2018A7PS0223P 		Name:	Nalin Deepak
+    ID:	2018A7PS0252P 		Name:	Akshat Gupta
+    ID:	2018A7PS0257P 		Name:	Prakhar Mishra*/
+
 #include "printParseTree.h"
 
 void main(int argc, char *argv[]) {
@@ -6,17 +11,12 @@ void main(int argc, char *argv[]) {
     TokenStream tokenStream = (TokenStream) malloc(sizeof(Token));
     TypeExpressionTable typeExpressionTable = createNewTypeExpressionTable();
     int length = readGrammar("grammar.txt", grammar);
-    printf("Grammar Read Sucessfully\n");
-    //printf(" argc : %d v %s\n",argc,argv[1]);
-    //tokeniseSourcecode("test.txt", tokenStream);
     if(argv[1]!=NULL){
         tokeniseSourcecode(argv[1], tokenStream);
-        //printf(" argc : %d v  YIPEEEE%s\n",argc,argv[1]);
     }
     else{
         tokeniseSourcecode("test.txt", tokenStream);
     }
-    printf("Token Stream Created Sucessfully\n");
 
     ParseTreeNode *root = (ParseTreeNode *) malloc(sizeof(ParseTreeNode));
 
@@ -29,27 +29,21 @@ void main(int argc, char *argv[]) {
         break;
     case 1:
         createParseTree(root, tokenStream, grammar, length);
-        printf("Parse Tree Creation complete\n");
         break;
     case 2:
         createParseTree(root, tokenStream, grammar, length);
-        printf("Parse Tree Creation complete\n");
         traverseParseTree(root, typeExpressionTable, true);
         printf("Parse Tree Traversal Complete\n");
         break;
     case 3:
         printGrammar(length, grammar);
         createParseTree(root, tokenStream, grammar, length);
-        // printf("Parse Tree Creation complete\n");
         traverseParseTree(root, typeExpressionTable, false);
-        // printf("Parse Tree Traversal Complete\n");
         printParseTree(root, 0);
         break;
     case 4:
         createParseTree(root, tokenStream, grammar, length);
-        // printf("Parse Tree Creation complete\n");
         traverseParseTree(root, typeExpressionTable, false);
-        // printf("Parse Tree Traversal Complete\n");
         printTypeExpressionTable(typeExpressionTable);
         break;        
     default:

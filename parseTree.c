@@ -1,3 +1,8 @@
+/*  ID:	2018A7PS0198P 		Name:	Prarabdh Nilesh Garg
+    ID:	2018A7PS0223P 		Name:	Nalin Deepak
+    ID:	2018A7PS0252P 		Name:	Akshat Gupta
+    ID:	2018A7PS0257P 		Name:	Prakhar Mishra*/
+
 #include "stack.h"
 
 Token *nextToken = NULL;
@@ -116,7 +121,12 @@ void createParseTree(ParseTreeNode *root, Token *tokenStream, GrammarCell *gramm
     root -> tokenType = NonTerminal;
     root -> node.nonLeafNode.noOfChildren = 0;
     nextToken = tokenStream;
-    createParseTreeReccursive(root, grammar, grammarLength);
+    int result = createParseTreeReccursive(root, grammar, grammarLength);
+    if(result == -1) {
+        printf("Unable to create Parse Tree. Please check syntax of source code.\n");
+    } else {
+        printf("Parse Tree creation sucessfull.\n");
+    }
 }
 
 /* void createParseTree(ParseTreeNode *root, Token *tokenStream, GrammarCell *grammar, int grammarLength) {

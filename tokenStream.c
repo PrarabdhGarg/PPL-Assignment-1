@@ -1,14 +1,9 @@
+/*  ID:	2018A7PS0198P 		Name:	Prarabdh Nilesh Garg
+    ID:	2018A7PS0223P 		Name:	Nalin Deepak
+    ID:	2018A7PS0252P 		Name:	Akshat Gupta
+    ID:	2018A7PS0257P 		Name:	Prakhar Mishra*/
+
 #include "tokenStream.h"
-
-/* int main(){     //sample driver main for code-testing
-    char filename[]="test.txt";
-    TokenStream tokenstream=NULL;
-    
-    tokenstream=tokeniseSourcecode(filename,tokenstream);
-    printLinkedList(tokenstream);
-
-    return 0;
-} */
 
 char KEYWORDS[13][10]={     //list of keywords for comparision 
     "program",
@@ -34,7 +29,7 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
 {
 	FILE *fptr;
     if ((fptr = fopen(filename, "r")) == NULL) {
-        printf("Error! opening file");
+        printf("Error! Opening file.\n");
        return NULL;
     }
     
@@ -72,10 +67,11 @@ TokenStream tokeniseSourcecode(char filename[], TokenStream tokenstream)
             p = strtok(NULL," \n\t\r");
         }
     }
-    printf("Line Count = %d\n", lineCount);
+    // printf("Line Count = %d\n", lineCount);
     free(currentToken);
     prevToken->next=NULL;  //freeing one last extra node and setting pointer of last node to NULL
     fclose(fptr);
+    printf("Token Stream Created Sucessfully\n");
     return tokenstream;
 }
 

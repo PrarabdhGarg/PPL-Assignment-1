@@ -1,3 +1,8 @@
+/*  ID:	2018A7PS0198P 		Name:	Prarabdh Nilesh Garg
+    ID:	2018A7PS0223P 		Name:	Nalin Deepak
+    ID:	2018A7PS0252P 		Name:	Akshat Gupta
+    ID:	2018A7PS0257P 		Name:	Prakhar Mishra*/
+
 #include "typeExpressionTable.h"
 
 bool printErrors = true;
@@ -54,6 +59,10 @@ void insertInTypeExpressionTable(TypeExpressionTableElement *element, TypeExpres
         free(temp);
     } else {
         while(next -> next != NULL) {
+            if(strcmp(next -> element -> variableName, temp -> element -> variableName) == 0) {
+                free(temp);
+                return ;
+            }
             next = next -> next;
         }
         next -> next = temp;
@@ -167,7 +176,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                     //can't be checked at run time
                     
                     printf("Warning: %3d: Dynamic range of array. Cannot be checked at compile time\n", startIndex->node.nonLeafNode.children->node.leafNode.lineNumber);
-                    continue;
+                    //continue;
                 }
                 else {
                     printf("Error : %3d : %dth dimmension must be an integer\n", startIndex->node.nonLeafNode.children->node.leafNode.lineNumber, i+1);
@@ -185,7 +194,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                     //can't be checked at run time
                     
                     printf("Warning: %3d: Dynamic range of array. Cannot be checked at compile time\n", endIndex->node.nonLeafNode.children->node.leafNode.lineNumber);
-                    continue;
+                    //continue;
                 }
                 else {
                     printf("Error : %3d : %dth dimmension must be an integer\n", endIndex->node.nonLeafNode.children->node.leafNode.lineNumber, i+1);
@@ -396,7 +405,9 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes = malloc(2 * sizeof(int));
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[0] = start;
             dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[0].sizes[1] = end;            
-            
+            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes = malloc((end - start + 1) * sizeof(int));
+            dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].size = end - start + 1;
+
             for(int i = 0; i < end - start + 1; i++){
                 index = atoi(rowDefJaggedArray->node.nonLeafNode.children[2].node.leafNode.lexeme);
                 if(index != i + start){
@@ -406,11 +417,9 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                         printf("Error: %3d: The row you are trying to define is not mentioned in the range.\n", rowDefJaggedArray->node.nonLeafNode.children[0].node.leafNode.lineNumber);
                     }
                 }
-                size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);
-                dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].size = size;
-                dataType -> node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes = malloc((size) * sizeof(int));
-                
+                size = atoi(rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lexeme);               
                 dataType->node.nonLeafNode.typeExpression.arrayTypeExpression.jaggedArrayTypeExpression.ranges[1].sizes[i] = size;
+                
                 if(size <= 0){
                     //error
                     if(printErrors) {
@@ -424,7 +433,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                         if(j != size-1 && valuesList->node.nonLeafNode.ruleNumber == 21){
                             //error
                             if(printErrors) {
-                                printf("Error: %3d: Number of enteries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                                printf("Error: %3d: Number of entries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
                             }
                             error = true;
                             break;
@@ -433,7 +442,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                         if(j != size -1 && numbersList->node.nonLeafNode.ruleNumber == 23){
                             //error
                             if(printErrors) {
-                                printf("Error: %3d: Number of enteries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                                printf("Error: %3d: Number of entries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
                             }
                             error = true;
                             break;
@@ -441,7 +450,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                         if(j == size - 1 && numbersList->node.nonLeafNode.ruleNumber != 23) {
                             // error
                             if(printErrors) {
-                                printf("Error: %3d: Number of enteries greater than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                                printf("Error: %3d: Number of entries greater than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
                             }
                             error = true;
                             break;
@@ -449,7 +458,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                         else if(numbersList->node.nonLeafNode.ruleNumber == 24){
                             //error
                             if(printErrors) {
-                                printf("Error: %3d: Number of enteries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                                printf("Error: %3d: Number of entries less than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
                             }
                             error = true;
                             break;
@@ -459,7 +468,7 @@ void traverseDeclarationParseTree(ParseTreeNode *declaration, TypeExpressionTabl
                             if(numbersList->node.nonLeafNode.ruleNumber != 24){
                                 //error
                                 if(printErrors) {
-                                    printf("Error: %3d: Number of enteries more than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
+                                    printf("Error: %3d: Number of entries more than expected.\n", rowDefJaggedArray->node.nonLeafNode.children[6].node.leafNode.lineNumber);
                                 }
                                 error = true;
                                 break;
@@ -809,7 +818,7 @@ void traverseSingleTerm(ParseTreeNode *singleTerm, TypeExpressionTable T){
                             if(printErrors) {
                                 printf("Warning: %3d: Dynamic range of array. Cannot be checked at compile time\n", indexNode->node.nonLeafNode.children->node.leafNode.lineNumber);
                             }
-                            continue;
+                            //continue;
                         }
                         else {
                             if(printErrors) {
